@@ -8,3 +8,8 @@ export const loginStudent = async (email, password) => {
 
   return response.data;
 };
+
+export const getProfile = async () => {
+  const { data } = await API.get("/quiz/student/profile");
+  return data;
+};

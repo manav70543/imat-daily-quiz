@@ -20,10 +20,15 @@ export default function Login() {
 
             const data = await loginStudent(email, password);
 
+            console.log("LOGIN RESPONSE:", data);
+
             localStorage.setItem("token", data.token);
             localStorage.setItem("student", JSON.stringify(data.student));
+            localStorage.setItem("student_id", data.student.id);
 
-            console.log("Login Successful");
+            console.log("Stored student_id:", localStorage.getItem("student_id"));
+
+            navigate("/dashboard");
             navigate("/dashboard");
         } catch (error) {
             alert(

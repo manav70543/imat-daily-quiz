@@ -7,11 +7,14 @@ import Quiz from "./pages/Quiz";
 import Leaderboard from "./pages/Leaderboard";
 import History from "./pages/History";
 import Profile from "./pages/Profile";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 function App() {
   return (
     <Routes>
+      {/* Student Routes */}
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
@@ -19,6 +22,15 @@ function App() {
       <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/history" element={<History />} />
       <Route path="/profile" element={<Profile />} />
+
+      {/* Admin Routes */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route
+        path="/admin/dashboard"
+        element={<AdminDashboard />}
+      />
+
+      {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

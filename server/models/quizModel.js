@@ -140,18 +140,16 @@ exports.getQuizHistory = async (studentId) => {
 exports.getLeaderboard = async () => {
     const [rows] = await db.query(`
         SELECT
-            s.id AS student_id,
-            s.full_name,
-            COUNT(qr.id) AS attempts,
+            s.full_name AS name,
             ROUND(
                 AVG((qr.score * 100.0) / qr.total_questions),
                 2
-            ) AS average_score
+            ) AS score
         FROM students s
         JOIN quiz_results qr
             ON s.id = qr.student_id
         GROUP BY s.id, s.full_name
-        ORDER BY average_score DESC;
+        ORDER BY score DESC
     `);
 
     return rows;
@@ -188,5 +186,322 @@ exports.getDashboardStats = async () => {
         totalAttempts: attempts.totalAttempts,
         averageScore: average.averageScore || 0
     };
+
+};
+
+exports.getStudentQuizResult = async (studentId, quizId) => {
+
+    const [rows] = await db.query(
+        `
+        SELECT
+            score,
+            total_questions
+        FROM quiz_results
+        WHERE student_id = ?
+        AND quiz_id = ?
+        `,
+        [studentId, quizId]
+    );
+
+    return rows;
+};
+
+exports.getQuizReview = async (quizId) => {
+
+    const [rows] = await db.query(
+        `
+        SELECT
+            q.id,
+            q.question,
+            q.option_a,
+            q.option_b,
+            q.option_c,
+            q.option_d,
+            q.correct_option
+        FROM daily_quiz_questions dq
+        JOIN questions q
+            ON dq.question_id = q.id
+        WHERE dq.quiz_id = ?
+        `,
+        [quizId]
+    );
+
+    return rows;
+};
+
+exports.getStudentAnswers = async (studentId, quizId) => {
+
+    const [rows] = await db.query(
+        `
+        SELECT
+            question_id,
+            selected_option
+        FROM student_answers
+        WHERE student_id = ?
+        AND quiz_id = ?
+        `,
+        [studentId, quizId]
+    );
+
+    return rows;
+};
+
+exports.saveStudentAnswer = async (
+    studentId,
+    quizId,
+    questionId,
+    selectedOption
+) => {
+
+    await db.query(
+        `
+        INSERT INTO student_answers
+        (student_id, quiz_id, question_id, selected_option)
+        VALUES (?, ?, ?, ?)
+        `,
+        [
+            studentId,
+            quizId,
+            questionId,
+            selectedOption
+        ]
+    );
+
+};
+exports.getStudentDashboard = async (studentId) => {
+
+    const [[attempted]] = await db.query(
+        `
+        SELECT COUNT(*) AS quizzesAttempted
+        FROM quiz_results
+        WHERE student_id = ?
+        `,
+        [studentId]
+    );
+
+    const [[average]] = await db.query(
+        `
+        SELECT
+        ROUND(AVG((score * 100.0) / total_questions),2) AS averageScore
+        FROM quiz_results
+        WHERE student_id = ?
+        `,
+        [studentId]
+    );
+
+    const [[best]] = await db.query(
+        `
+    SELECT
+        ROUND(
+            MAX((score * 100.0) / total_questions),
+            2
+        ) AS bestScore
+    FROM quiz_results
+    WHERE student_id = ?
+    `,
+        [studentId]
+    );
+
+    const [[today]] = await db.query(
+        `
+        SELECT COUNT(*) AS completed
+        FROM quiz_results qr
+        JOIN daily_quizzes dq
+        ON qr.quiz_id = dq.id
+        WHERE qr.student_id = ?
+        AND dq.quiz_date = CURDATE()
+        `,
+        [studentId]
+    );
+
+    return {
+        quizzesAttempted: attempted.quizzesAttempted,
+        averageScore: average.averageScore || 0,
+        bestScore: best.bestScore || 0,
+        todayCompleted: today.completed > 0
+    };
+};
+exports.getWeeklyPerformance = async (studentId) => {
+
+    const [rows] = await db.query(
+        `
+        SELECT
+            DATE_FORMAT(dq.quiz_date,'%a') AS day,
+            ROUND((qr.score * 100.0) / qr.total_questions,2) AS score,
+            DAYOFWEEK(dq.quiz_date) AS dayNumber
+        FROM quiz_results qr
+        JOIN daily_quizzes dq
+            ON qr.quiz_id = dq.id
+        WHERE qr.student_id = ?
+        AND dq.quiz_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+        ORDER BY dq.quiz_date
+        `,
+        [studentId]
+    );
+
+    // Create all 7 days
+    const week = [
+        { day: "Sun", score: 0 },
+        { day: "Mon", score: 0 },
+        { day: "Tue", score: 0 },
+        { day: "Wed", score: 0 },
+        { day: "Thu", score: 0 },
+        { day: "Fri", score: 0 },
+        { day: "Sat", score: 0 }
+    ];
+
+    rows.forEach(row => {
+
+        const index = week.findIndex(d => d.day === row.day);
+
+        if (index !== -1) {
+            week[index].score = Number(row.score);
+        }
+
+    });
+
+    return week;
+};
+
+
+exports.getSubjectPerformance = async (studentId) => {
+
+    const [rows] = await db.query(
+        `
+        SELECT
+            q.subject,
+            ROUND(
+                AVG(
+                    CASE
+                        WHEN sa.selected_option = q.correct_option
+                        THEN 100
+                        ELSE 0
+                    END
+                ),
+            2) AS score
+        FROM student_answers sa
+
+        JOIN questions q
+            ON sa.question_id = q.id
+
+        WHERE sa.student_id = ?
+
+        GROUP BY q.subject
+
+        ORDER BY score DESC
+        `,
+        [studentId]
+    );
+
+    return rows;
+};
+
+exports.getCurrentStreak = async (studentId) => {
+
+    const [rows] = await db.query(
+        `
+        SELECT DATE(dq.quiz_date) AS quiz_date
+        FROM quiz_results qr
+        JOIN daily_quizzes dq
+            ON qr.quiz_id = dq.id
+        WHERE qr.student_id = ?
+        ORDER BY dq.quiz_date DESC
+        `,
+        [studentId]
+    );
+
+    if (rows.length === 0) {
+        return 0;
+    }
+
+    let streak = 0;
+
+    let expectedDate = new Date();
+    expectedDate.setHours(0, 0, 0, 0);
+
+    const latest = new Date(rows[0].quiz_date);
+    latest.setHours(0, 0, 0, 0);
+
+    const firstDiff = Math.floor(
+        (expectedDate - latest) / (1000 * 60 * 60 * 24)
+    );
+
+    if (firstDiff === 1) {
+        expectedDate.setDate(expectedDate.getDate() - 1);
+    }
+
+    for (const row of rows) {
+
+        const quizDate = new Date(row.quiz_date);
+        quizDate.setHours(0, 0, 0, 0);
+
+        if (quizDate.getTime() === expectedDate.getTime()) {
+            streak++;
+            expectedDate.setDate(expectedDate.getDate() - 1);
+        } else {
+            break;
+        }
+    }
+
+    return streak;
+};
+
+exports.getAchievements = async (studentId) => {
+
+    const dashboard = await exports.getStudentDashboard(studentId);
+
+    const streak = await exports.getCurrentStreak(studentId);
+
+    return [
+        {
+            title: "First Quiz",
+            icon: "🥇",
+            unlocked: dashboard.quizzesAttempted >= 1
+        },
+        {
+            title: "Perfect Score",
+            icon: "💯",
+            unlocked: dashboard.bestScore >= 100
+        },
+        {
+            title: "7 Day Streak",
+            icon: "🔥",
+            unlocked: streak >= 7
+        },
+        {
+            title: "25 Quizzes",
+            icon: "📚",
+            unlocked: dashboard.quizzesAttempted >= 25
+        }
+    ];
+};
+exports.getStudentXP = async (studentId) => {
+
+    const [rows] = await db.query(
+        `
+        SELECT score
+        FROM quiz_results
+        WHERE student_id = ?
+        `,
+        [studentId]
+    );
+
+    return rows;
+};
+exports.getStudentProfile = async (studentId) => {
+
+    const [rows] = await db.query(
+        `
+        SELECT
+            full_name,
+            email,
+            created_at
+        FROM students
+        WHERE id = ?
+        `,
+        [studentId]
+    );
+
+    return rows[0];
 
 };

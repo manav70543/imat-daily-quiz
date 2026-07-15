@@ -1,31 +1,100 @@
 const quizModel = require("../models/quizModel");
 
-// Get today's quiz
-exports.getTodayQuiz = async () => {
+// ==========================
+// Get Today's Quiz
+// ==========================
+exports.getTodayQuiz = async (studentId) => {
+
     const today = new Date().toISOString().split("T")[0];
 
-    // Check if today's quiz already exists
     const existingQuiz = await quizModel.findTodayQuiz(today);
 
+    // Today's quiz already exists
     if (existingQuiz.length > 0) {
-        const questions = await quizModel.getQuizQuestions(existingQuiz[0].id);
+
+        const quizId = existingQuiz[0].id;
+
+        // Check if student has already submitted
+        const alreadySubmitted = await quizModel.hasSubmittedQuiz(
+            studentId,
+            quizId
+        );
+
+        if (alreadySubmitted) {
+
+            const result = await quizModel.getStudentQuizResult(
+                studentId,
+                quizId
+            );
+
+            const studentAnswers = await quizModel.getStudentAnswers(
+                studentId,
+                quizId
+            );
+
+            const review = await quizModel.getQuizReview(quizId);
+
+            const score = result[0].score;
+            const total = result[0].total_questions;
+
+            const reviewData = review.map(question => {
+
+                const answer = studentAnswers.find(
+                    a => Number(a.question_id) === Number(question.id)
+                );
+
+                const yourAnswer = answer
+                    ? answer.selected_option
+                    : "Not Answered";
+
+                return {
+                    questionId: question.id,
+                    question: question.question,
+
+                    option_a: question.option_a,
+                    option_b: question.option_b,
+                    option_c: question.option_c,
+                    option_d: question.option_d,
+
+                    yourAnswer,
+                    correctAnswer: question.correct_option,
+
+                    correct:
+                        yourAnswer === question.correct_option
+                };
+            });
+
+            return {
+                status: 200,
+                alreadySubmitted: true,
+                result: {
+                    score,
+                    total,
+                    percentage: Number(
+                        ((score / total) * 100).toFixed(2)
+                    ),
+                    review: reviewData
+                }
+            };
+        }
+
+        // Student has not submitted
+        const questions = await quizModel.getQuizQuestions(quizId);
 
         return {
             status: 200,
             quiz: {
                 ...existingQuiz[0],
-                questions,
-            },
+                questions
+            }
         };
     }
 
-    // Create today's quiz
+    // No quiz exists today -> create one
     const quizId = await quizModel.createTodayQuiz(today);
 
-    // Get 10 random questions
     const randomQuestions = await quizModel.getRandomQuestions();
 
-    // Save them
     for (const question of randomQuestions) {
         await quizModel.addQuestionToQuiz(
             quizId,
@@ -33,7 +102,6 @@ exports.getTodayQuiz = async () => {
         );
     }
 
-    // Fetch complete quiz
     const questions = await quizModel.getQuizQuestions(quizId);
 
     return {
@@ -41,15 +109,17 @@ exports.getTodayQuiz = async () => {
         quiz: {
             id: quizId,
             quiz_date: today,
-            questions,
-        },
+            questions
+        }
     };
 };
 
-// Submit quiz
+// ==========================
+// Submit Quiz
+// ==========================
 exports.submitQuiz = async (studentId, quizId, answers) => {
 
-    // Check duplicate submission
+    // Prevent duplicate submission
     const alreadySubmitted = await quizModel.hasSubmittedQuiz(
         studentId,
         quizId
@@ -71,13 +141,28 @@ exports.submitQuiz = async (studentId, quizId, answers) => {
     for (const answer of answers) {
 
         const correct = correctAnswers.find(
-            q => q.id === answer.question_id
+            q => Number(q.id) === Number(answer.question_id)
         );
 
-        if (
-            correct &&
-            correct.correct_option === answer.selected_option
-        ) {
+        if (!correct) continue;
+
+        const selectedOption = String(answer.selected_option)
+            .trim()
+            .toUpperCase();
+
+        const correctOption = String(correct.correct_option)
+            .trim()
+            .toUpperCase();
+
+        // Save student's answer
+        await quizModel.saveStudentAnswer(
+            studentId,
+            quizId,
+            answer.question_id,
+            selectedOption
+        );
+
+        if (selectedOption === correctOption) {
             score++;
         }
     }
@@ -90,16 +175,52 @@ exports.submitQuiz = async (studentId, quizId, answers) => {
         correctAnswers.length
     );
 
+    // Get complete quiz review
+    const review = await quizModel.getQuizReview(quizId);
+
+    const reviewData = review.map(question => {
+
+        const studentAnswer = answers.find(
+            a => Number(a.question_id) === Number(question.id)
+        );
+
+        const yourAnswer = studentAnswer
+            ? studentAnswer.selected_option
+            : "Not Answered";
+
+        return {
+            questionId: question.id,
+            question: question.question,
+
+            option_a: question.option_a,
+            option_b: question.option_b,
+            option_c: question.option_c,
+            option_d: question.option_d,
+
+            yourAnswer,
+            correctAnswer: question.correct_option,
+
+            correct:
+                yourAnswer === question.correct_option
+        };
+    });
+
     return {
         status: 200,
         score,
         total: correctAnswers.length,
-        percentage: (score / correctAnswers.length) * 100
+        percentage: Number(
+            ((score / correctAnswers.length) * 100).toFixed(2)
+        ),
+        review: reviewData
     };
 };
 
-// Get student's quiz history
+// ==========================
+// Quiz History
+// ==========================
 exports.getQuizHistory = async (studentId) => {
+
     const history = await quizModel.getQuizHistory(studentId);
 
     const formattedHistory = history.map(item => ({
@@ -116,7 +237,10 @@ exports.getQuizHistory = async (studentId) => {
         history: formattedHistory
     };
 };
-// Get leaderboard
+
+// ==========================
+// Leaderboard
+// ==========================
 exports.getLeaderboard = async () => {
 
     const leaderboard = await quizModel.getLeaderboard();
@@ -125,9 +249,11 @@ exports.getLeaderboard = async () => {
         status: 200,
         leaderboard
     };
-
 };
-// Get admin dashboard
+
+// ==========================
+// Admin Dashboard
+// ==========================
 exports.getDashboardStats = async () => {
 
     const stats = await quizModel.getDashboardStats();
@@ -135,6 +261,96 @@ exports.getDashboardStats = async () => {
     return {
         status: 200,
         dashboard: stats
+    };
+};
+
+// ==========================
+// Student Dashboard
+// ==========================
+exports.getStudentDashboard = async (studentId) => {
+
+    const dashboard = await quizModel.getStudentDashboard(studentId);
+
+    return {
+        status: 200,
+        dashboard
+    };
+
+};
+
+exports.getWeeklyPerformance = async (studentId) => {
+
+    const weekly = await quizModel.getWeeklyPerformance(studentId);
+
+    return {
+        status: 200,
+        weekly
+    };
+
+};
+
+exports.getSubjectPerformance = async (studentId) => {
+
+    const subjects =
+        await quizModel.getSubjectPerformance(studentId);
+
+    return {
+        status: 200,
+        subjects
+    };
+
+};
+exports.getCurrentStreak = async (studentId) => {
+
+    const streak =
+        await quizModel.getCurrentStreak(studentId);
+
+    return {
+        status: 200,
+        streak
+    };
+
+};
+exports.getAchievements = async (studentId) => {
+
+    const achievements =
+        await quizModel.getAchievements(studentId);
+
+    return {
+        status: 200,
+        achievements
+    };
+
+};
+exports.getStudentXP = async (studentId) => {
+
+    const rows = await quizModel.getStudentXP(studentId);
+
+    let xp = 0;
+
+    rows.forEach((quiz) => {
+        xp += Number(quiz.score);
+    });
+
+    const level = Math.floor(xp / 100) + 1;
+
+    return {
+        status: 200,
+        xp,
+        level,
+        progress: xp % 100,
+        nextLevelXP: level * 100
+    };
+};
+
+exports.getStudentProfile = async (studentId) => {
+
+    const profile =
+        await quizModel.getStudentProfile(studentId);
+
+    return {
+        status: 200,
+        profile
     };
 
 };
