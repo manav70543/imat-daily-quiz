@@ -1,31 +1,54 @@
-
+const bcrypt = require("bcrypt");
 const adminModel = require("../models/adminModel");
 const generateToken = require("../utils/generateToken");
 
+// ===========================
+// Admin Login
+// ===========================
 exports.login = async (email, password) => {
 
-    console.log("EMAIL:", email);
-    console.log("PASSWORD:", password);
+    console.log("=================================");
+    console.log("LOGIN ATTEMPT");
+    console.log("Email Entered:", email);
+    console.log("Password Entered:", password);
 
     const admin = await adminModel.findAdminByEmail(email);
 
-    console.log(admin);
+    console.log("Admin From DB:", admin);
 
     if (admin.length === 0) {
+        console.log("❌ Admin not found");
+
         return {
             status: 404,
             message: "Admin not found"
         };
     }
 
-    if (admin[0].password !== password) {
+    console.log("Stored Hash:", admin[0].password);
+
+    const isMatch = await bcrypt.compare(
+        password,
+        admin[0].password
+    );
+
+    console.log("Password Match:", isMatch);
+
+    if (!isMatch) {
+        console.log("❌ Invalid Password");
+
         return {
             status: 401,
             message: "Invalid password"
         };
     }
 
-    const token = generateToken(admin[0].id, "admin");
+    console.log("✅ Login Success");
+
+    const token = generateToken(
+        admin[0].id,
+        "admin"
+    );
 
     return {
         status: 200,
@@ -36,8 +59,12 @@ exports.login = async (email, password) => {
             email: admin[0].email
         }
     };
+
 };
 
+// ===========================
+// Dashboard Statistics
+// ===========================
 exports.getDashboardStats = async () => {
 
     const dashboard =
@@ -49,6 +76,10 @@ exports.getDashboardStats = async () => {
     };
 
 };
+
+// ===========================
+// Recent Students
+// ===========================
 exports.getRecentStudents = async () => {
 
     const students =
