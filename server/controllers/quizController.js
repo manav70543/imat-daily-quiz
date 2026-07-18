@@ -314,3 +314,32 @@ exports.getStudentProfile = async (req, res) => {
     }
 
 };
+
+// ==========================
+// Student Quiz History
+// ==========================
+exports.getStudentHistory = async (req, res) => {
+
+    try {
+
+        const studentId = req.student.id;
+
+        const history = await quizService.getStudentHistory(studentId);
+
+        res.status(200).json({
+            success: true,
+            history
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch quiz history."
+        });
+
+    }
+
+};

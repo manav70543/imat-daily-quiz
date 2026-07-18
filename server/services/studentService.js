@@ -104,3 +104,21 @@ exports.getProfile = async (studentId) => {
     };
 
 };
+exports.getStudentDetails = async (id) => {
+
+    const result =
+        await studentModel.getStudentDetails(id);
+
+    if (!result) {
+        return {
+            status: 404,
+            message: "Student not found"
+        };
+    }
+
+    return {
+        status: 200,
+        ...result
+    };
+
+};

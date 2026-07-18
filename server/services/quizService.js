@@ -354,3 +354,15 @@ exports.getStudentProfile = async (studentId) => {
     };
 
 };
+
+// ==========================
+// Student Quiz History
+// ==========================
+
+exports.getStudentHistory = async (studentId) => {
+
+    const history = await quizModel.getStudentHistory(studentId);
+
+    return history;
+
+};

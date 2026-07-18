@@ -21,26 +21,53 @@ exports.createTodayQuiz = async (quizDate) => {
 };
 
 // Get 10 random questions
+// Get 50 questions (10 from each subject)
 exports.getRandomQuestions = async () => {
-    const [rows] = await db.query(
-        `
-        SELECT id
-        FROM questions
-        ORDER BY RAND()
-        LIMIT 10
-        `
-    );
 
-    return rows;
+    const subjects = [
+        "Biology",
+        "Chemistry",
+        "Physics",
+        "Mathematics",
+        "Logical Reasoning"
+    ];
+
+    let allQuestions = [];
+
+    for (const subject of subjects) {
+
+        const [rows] = await db.query(
+            `
+            SELECT id
+            FROM questions
+            WHERE subject = ?
+            ORDER BY RAND()
+            LIMIT 10
+            `,
+            [subject]
+        );
+
+        if (rows.length < 10) {
+            throw new Error(
+                `${subject} has only ${rows.length} questions. At least 10 are required.`
+            );
+        }
+
+        allQuestions.push(...rows);
+
+    }
+
+    return allQuestions;
+
 };
 
 // Save question into today's quiz
 exports.addQuestionToQuiz = async (quizId, questionId) => {
     await db.query(
         `
-        INSERT INTO daily_quiz_questions
-        (quiz_id, question_id)
-        VALUES (?, ?)
+       INSERT INTO daily_quiz_questions
+    (daily_quiz_id, question_id)
+    VALUES (?, ?)
         `,
         [quizId, questionId]
     );
@@ -62,7 +89,7 @@ exports.getQuizQuestions = async (quizId) => {
         FROM daily_quiz_questions dq
         JOIN questions q
             ON dq.question_id = q.id
-        WHERE dq.quiz_id = ?
+        WHERE dq.daily_quiz_id = ?
         `,
         [quizId]
     );
@@ -80,7 +107,7 @@ exports.getCorrectAnswers = async (quizId) => {
         FROM daily_quiz_questions dq
         JOIN questions q
             ON dq.question_id = q.id
-        WHERE dq.quiz_id = ?
+        WHERE dq.daily_quiz_id = ?
         `,
         [quizId]
     );
@@ -221,7 +248,7 @@ exports.getQuizReview = async (quizId) => {
         FROM daily_quiz_questions dq
         JOIN questions q
             ON dq.question_id = q.id
-        WHERE dq.quiz_id = ?
+        WHERE dq.daily_quiz_id = ?
         `,
         [quizId]
     );
@@ -504,4 +531,39 @@ exports.getStudentProfile = async (studentId) => {
 
     return rows[0];
 
+};
+// ==========================
+// Student Quiz History
+// ==========================
+exports.getStudentHistory = async (studentId) => {
+
+    const [rows] = await db.query(
+        `
+        SELECT
+            qr.id,
+            qr.quiz_id,
+            dq.quiz_date,
+            qr.score,
+            qr.total_questions,
+
+            ROUND(
+                (qr.score * 100.0) / qr.total_questions,
+                2
+            ) AS percentage,
+
+            qr.submitted_at
+
+        FROM quiz_results qr
+
+        JOIN daily_quizzes dq
+            ON qr.quiz_id = dq.id
+
+        WHERE qr.student_id = ?
+
+        ORDER BY dq.quiz_date DESC
+        `,
+        [studentId]
+    );
+
+    return rows;
 };

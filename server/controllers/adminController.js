@@ -45,3 +45,23 @@ exports.getDashboardStats = async (req, res) => {
     }
 
 };
+exports.getRecentStudents = async (req, res) => {
+
+    try {
+
+        const result =
+            await adminService.getRecentStudents();
+
+        res.status(result.status).json(result);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+
+    }
+
+};

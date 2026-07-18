@@ -12,5 +12,9 @@ router.get(
     "/dashboard",
     adminController.getDashboardStats
 );
+router.get(
+    "/recent-students",
+    adminController.getRecentStudents
+);
 
 module.exports = router;

@@ -25,3 +25,25 @@ exports.getProfile = async (req, res) => {
     res.status(result.status).json(result);
 
 };
+exports.getStudentDetails = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const result =
+            await studentService.getStudentDetails(id);
+
+        res.status(result.status).json(result);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+
+    }
+
+};
