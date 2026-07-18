@@ -1,0 +1,47 @@
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+.admin-content {
+    flex: 1;
+    margin-left: 260px;
+    padding: 40px;
+}
+
+.admin-content h1 {
+    font-size: 42px;
+    margin-bottom: 30px;
+}
+
+.table-container {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,.08);
+}
+
+.students-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.students-table thead {
+    background: #2563eb;
+    color: white;
+}
+
+.students-table th,
+.students-table td {
+    padding: 18px 24px;
+    text-align: left;
+}
+
+.students-table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.students-table tbody tr:hover {
+    background: #f7f9ff;
+}

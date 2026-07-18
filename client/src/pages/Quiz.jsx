@@ -17,6 +17,7 @@ export default function Quiz() {
     const [alreadySubmitted, setAlreadySubmitted] = useState(false);
     const [result, setResult] = useState(null);
     const [review, setReview] = useState([]);
+    const [currentQuestion, setCurrentQuestion] = useState(0);
 
     useEffect(() => {
         fetchQuiz();
@@ -61,6 +62,12 @@ export default function Quiz() {
             ...prev,
             [questionId]: option
         }));
+
+        if (currentQuestion < totalQuestions - 1) {
+            setTimeout(() => {
+                setCurrentQuestion(prev => prev + 1);
+            }, 200);
+        }
 
     };
 
@@ -117,24 +124,24 @@ export default function Quiz() {
 
     }
 
-    // Student already submitted today's quiz
-    const scoreColor =
-        result?.percentage >= 80
-            ? "#22c55e"
-            : result?.percentage >= 50
-                ? "#f59e0b"
-                : "#ef4444";
-
-    const resultMessage =
-        result.percentage >= 90
-            ? "Outstanding! 🎉"
-            : result.percentage >= 70
-                ? "Excellent work! 👏"
-                : result.percentage >= 50
-                    ? "Good effort! Keep practicing."
-                    : "Don't worry. Practice more and you'll improve! 💪";
-
+    
     if (alreadySubmitted) {
+        // Student already submitted today's quiz
+        const scoreColor =
+            result?.percentage >= 80
+                ? "#22c55e"
+                : result?.percentage >= 50
+                    ? "#f59e0b"
+                    : "#ef4444";
+    
+        const resultMessage =
+            result?.percentage >= 90
+                ? "Outstanding! 🎉"
+                : result?.percentage >= 70
+                    ? "Excellent work! 👏"
+                    : result?.percentage >= 50
+                        ? "Good effort! Keep practicing."
+                        : "Don't worry. Practice more and you'll improve! 💪";
 
         return (
             <>
@@ -246,7 +253,6 @@ export default function Quiz() {
     }
 
     if (!quiz) {
-
         return (
             <>
                 <Navbar />
@@ -257,6 +263,15 @@ export default function Quiz() {
         );
 
     }
+    const totalQuestions = quiz.questions.length;
+
+    const answeredQuestions = Object.keys(answers).length;
+
+    const progress =
+        (answeredQuestions / totalQuestions) * 100;
+
+    const question =
+        quiz.questions[currentQuestion];
 
     return (
         <>
@@ -276,47 +291,139 @@ export default function Quiz() {
 
                 </div>
 
-                {quiz.questions.map((question, index) => (
+                <div className="progress-section">
 
-                    <div
-                        key={question.id}
-                        className="quiz-card"
-                    >
+                    <div className="progress-info">
 
-                        <h3>
-                            {index + 1}. {question.question}
-                        </h3>
+                        <span>
+                            Progress
+                        </span>
 
-                        {["A", "B", "C", "D"].map((option) => (
-
-                            <label
-                                key={option}
-                                className="option"
-                            >
-
-                                <input
-                                    type="radio"
-                                    name={`question-${question.id}`}
-                                    checked={answers[question.id] === option}
-                                    onChange={() =>
-                                        handleAnswerChange(
-                                            question.id,
-                                            option
-                                        )
-                                    }
-                                />
-
-                                {" "}
-
-                                {option}. {question[`option_${option.toLowerCase()}`]}
-
-                            </label>
-
-                        ))}
+                        <span>
+                            {answeredQuestions} / {totalQuestions} Answered
+                        </span>
 
                     </div>
 
-                ))}
+                    <div className="progress-bar">
+
+                        <div
+                            className="progress-fill"
+                            style={{
+                                width: `${progress}%`
+                            }}
+                        />
+
+                    </div>
+                    <div
+                        style={{
+                            marginTop: 12,
+                            display: "flex",
+                            justifyContent: "space-between",
+                            color: "#6b7280",
+                            fontWeight: 600
+                        }}
+                    >
+                        <span>Answered: {answeredQuestions}</span>
+
+                        <span>Remaining: {totalQuestions - answeredQuestions}</span>
+                    </div>
+
+                </div>
+
+                <div className="quiz-card">
+
+                    <div className="question-number">
+
+                        Question {currentQuestion + 1} of {totalQuestions}
+
+                    </div>
+
+                    <h3>{question.question}</h3>
+
+                    {["A", "B", "C", "D"].map(option => (
+
+                        <label
+                            key={option}
+                            className={`option ${answers[question.id] === option
+                                ? "selected-option"
+                                : ""
+                                }`}
+                        >
+
+                            <input
+                                type="radio"
+                                name={`question-${question.id}`}
+                                checked={answers[question.id] === option}
+                                onChange={() =>
+                                    handleAnswerChange(question.id, option)
+                                }
+                            />
+
+                            {option}. {question[`option_${option.toLowerCase()}`]}
+
+                        </label>
+
+                    ))}
+
+                </div> {/* End quiz-card */}
+
+                <div className="navigation-buttons">
+
+                    <button
+                        className="nav-btn"
+                        disabled={currentQuestion === 0}
+                        onClick={() =>
+                            setCurrentQuestion(prev => prev - 1)
+                        }
+                    >
+                        ← Previous
+                    </button>
+
+                    <button
+                        className="nav-btn"
+                        disabled={currentQuestion === totalQuestions - 1}
+                        onClick={() =>
+                            setCurrentQuestion(prev => prev + 1)
+                        }
+                    >
+                        Next →
+                    </button>
+
+                </div>
+
+                <div className="question-palette">
+
+                    <h3>Question Palette</h3>
+
+                    <div className="palette-grid">
+
+                        {quiz.questions.map((q, index) => {
+
+                            let className = "palette-btn";
+
+                            if (index === currentQuestion)
+                                className += " current";
+                            else if (answers[q.id])
+                                className += " answered";
+
+                            return (
+                                <button
+                                    key={q.id}
+                                    className={className}
+                                    onClick={() =>
+                                        setCurrentQuestion(index)
+                                    }
+                                >
+                                    {index + 1}
+                                </button>
+                            );
+
+                        })}
+
+                    </div>
+
+                </div>
 
                 <div
                     style={{
@@ -324,16 +431,16 @@ export default function Quiz() {
                         marginTop: 40
                     }}
                 >
-
                     <button
                         onClick={handleSubmit}
                         className="submit-btn"
                     >
-                        Submit Quiz
+                        Finish Quiz
                     </button>
                 </div>
 
-            </div>
+            </div> {/* End quiz-container */}
+
         </>
     );
 }

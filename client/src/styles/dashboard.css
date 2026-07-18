@@ -344,3 +344,35 @@
 .goal-fill{
     transition:width .8s ease;
 }
+.recent-students {
+    margin-top: 40px;
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
+
+.recent-students h2{
+    margin-bottom:20px;
+}
+
+.recent-students table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.recent-students th{
+    background:#3465d9;
+    color:white;
+    padding:15px;
+    text-align:left;
+}
+
+.recent-students td{
+    padding:15px;
+    border-bottom:1px solid #eee;
+}
+
+.recent-students tr:last-child td{
+    border-bottom:none;
+}

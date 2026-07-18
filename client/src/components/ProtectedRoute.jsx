@@ -1,3 +1,11 @@
-export default function Login() {
-    return <h1>Login Page</h1>;
+import { Navigate, Outlet } from "react-router-dom";
+
+export default function ProtectedRoute() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
 }

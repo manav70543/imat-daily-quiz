@@ -45,3 +45,7 @@ export const getStudentProfile = async () => {
     const { data } = await API.get("/quiz/student/profile");
     return data;
 };
+export const getStudentHistory = async () => {
+    const { data } = await API.get("/quiz/student/history");
+    return data;
+};

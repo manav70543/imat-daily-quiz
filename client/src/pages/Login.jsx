@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginStudent } from "../services/authService";
 
 export default function Login() {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (localStorage.getItem("token")) {
+            navigate("/dashboard", { replace: true });
+        }
+    }, [navigate]);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -26,10 +32,13 @@ export default function Login() {
             localStorage.setItem("student", JSON.stringify(data.student));
             localStorage.setItem("student_id", data.student.id);
 
-            console.log("Stored student_id:", localStorage.getItem("student_id"));
+            console.log(
+                "Stored student_id:",
+                localStorage.getItem("student_id")
+            );
 
-            navigate("/dashboard");
-            navigate("/dashboard");
+            navigate("/dashboard", { replace: true });
+
         } catch (error) {
             alert(
                 error.response?.data?.message ||
@@ -59,7 +68,9 @@ export default function Login() {
                     boxShadow: "0 0 15px rgba(0,0,0,0.1)",
                 }}
             >
-                <h1 style={{ marginBottom: "20px" }}>IMAT Daily Quiz</h1>
+                <h1 style={{ marginBottom: "20px" }}>
+                    IMAT Daily Quiz
+                </h1>
 
                 <input
                     type="email"
@@ -96,6 +107,7 @@ export default function Login() {
                         border: "none",
                         borderRadius: "5px",
                         opacity: loading ? 0.7 : 1,
+                        cursor: loading ? "not-allowed" : "pointer",
                     }}
                 >
                     {loading ? "Logging in..." : "Login"}
