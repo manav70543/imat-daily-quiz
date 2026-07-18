@@ -202,3 +202,14 @@ exports.getStudentAttempt = async (studentId, quizId) => {
     return rows;
 
 };
+
+exports.deleteStudent = async (id) => {
+
+    const [result] = await db.query(
+        "DELETE FROM students WHERE id = ?",
+        [id]
+    );
+
+    return result;
+
+};

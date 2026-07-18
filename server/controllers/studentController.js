@@ -20,7 +20,7 @@ exports.loginStudent = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
 
-    const result = await studentService.getProfile(req.student.id);
+    const result = await studentService.getProfile(req.user.id);
 
     res.status(result.status).json(result);
 

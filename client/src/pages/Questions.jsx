@@ -147,30 +147,36 @@ export default function Questions() {
 
     const handleImportAll = async () => {
 
-        try {
+    try {
 
-            const response = await fetch(
-                "http://localhost:5000/api/admin/import-all",
-                {
-                    method: "POST"
+        const token = localStorage.getItem("adminToken");
+
+        const response = await fetch(
+            "http://localhost:5000/api/admin/import-all",
+            {
+                method: "POST",
+
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            );
+            }
+        );
 
-            const data = await response.json();
+        const data = await response.json();
 
-            alert(data.message);
+        alert(data.message);
 
-            loadQuestions(page);
+        loadQuestions(page);
 
-        } catch (err) {
+    } catch (err) {
 
-            console.error(err);
+        console.error(err);
 
-            alert("Import failed.");
+        alert("Import failed.");
 
-        }
+    }
 
-    };
+};
     const handleEdit = (question) => {
 
         setIsEditing(true);

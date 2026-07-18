@@ -1,38 +1,61 @@
 const questionModel = require("../models/questionModel");
 
+// =======================
+// Get All Questions
+// =======================
 exports.getAllQuestions = async () => {
+
     const questions = await questionModel.findAllQuestions();
 
     return {
         status: 200,
         questions
     };
+
 };
 
-exports.addQuestion = async (questionData) => {
+// =======================
+// Add Question
+// =======================
+exports.addQuestion = async (data) => {
+
+    const {
+        question,
+        option_a,
+        option_b,
+        option_c,
+        option_d,
+        correct_option,
+        subject,
+        difficulty
+    } = data;
 
     await questionModel.createQuestion(
-        questionData.question,
-        questionData.option_a,
-        questionData.option_b,
-        questionData.option_c,
-        questionData.option_d,
-        questionData.correct_option,
-        questionData.subject,
-        questionData.difficulty
+        question,
+        option_a,
+        option_b,
+        option_c,
+        option_d,
+        correct_option,
+        subject,
+        difficulty
     );
 
     return {
         status: 201,
         message: "Question added successfully"
     };
+
 };
 
+// =======================
+// Get Question By ID
+// =======================
 exports.getQuestionById = async (id) => {
 
-    const questions = await questionModel.findQuestionById(id);
+    const question = await questionModel.findQuestionById(id);
 
-    if (questions.length === 0) {
+    if (!question.length) {
         return {
             status: 404,
             message: "Question not found"
@@ -41,31 +64,37 @@ exports.getQuestionById = async (id) => {
 
     return {
         status: 200,
-        question: questions[0]
+        question: question[0]
     };
 
 };
-exports.updateQuestion = async (id, questionData) => {
 
-    const questions = await questionModel.findQuestionById(id);
+// =======================
+// Update Question
+// =======================
+exports.updateQuestion = async (id, data) => {
 
-    if (questions.length === 0) {
-        return {
-            status: 404,
-            message: "Question not found"
-        };
-    }
+    const {
+        question,
+        option_a,
+        option_b,
+        option_c,
+        option_d,
+        correct_option,
+        subject,
+        difficulty
+    } = data;
 
     await questionModel.updateQuestion(
         id,
-        questionData.question,
-        questionData.option_a,
-        questionData.option_b,
-        questionData.option_c,
-        questionData.option_d,
-        questionData.correct_option,
-        questionData.subject,
-        questionData.difficulty
+        question,
+        option_a,
+        option_b,
+        option_c,
+        option_d,
+        correct_option,
+        subject,
+        difficulty
     );
 
     return {
@@ -75,16 +104,10 @@ exports.updateQuestion = async (id, questionData) => {
 
 };
 
+// =======================
+// Delete Question
+// =======================
 exports.deleteQuestion = async (id) => {
-
-    const questions = await questionModel.findQuestionById(id);
-
-    if (questions.length === 0) {
-        return {
-            status: 404,
-            message: "Question not found"
-        };
-    }
 
     await questionModel.deleteQuestion(id);
 
@@ -92,4 +115,5 @@ exports.deleteQuestion = async (id) => {
         status: 200,
         message: "Question deleted successfully"
     };
+
 };

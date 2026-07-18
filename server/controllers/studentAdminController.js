@@ -115,3 +115,29 @@ exports.getStudentAttempt = async (req, res) => {
     }
 
 };
+
+// ==========================
+// Delete Student
+// ==========================
+exports.deleteStudent = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const result =
+            await studentAdminService.deleteStudent(id);
+
+        res.status(result.status).json(result);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+
+    }
+
+};

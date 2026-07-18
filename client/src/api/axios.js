@@ -4,18 +4,27 @@ const API = axios.create({
   baseURL: "http://localhost:5000/api",
 });
 
-// Add JWT to every request
+// ==============================
+// Request Interceptor
+// ==============================
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  // Don't overwrite Authorization if it already exists
+  if (!config.headers.Authorization) {
+
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
 
   return config;
 });
 
-// Handle expired/missing JWT
+// ==============================
+// Response Interceptor
+// ==============================
 API.interceptors.response.use(
   (response) => response,
 
@@ -23,16 +32,30 @@ API.interceptors.response.use(
 
     if (error.response?.status === 401) {
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("student");
-      localStorage.removeItem("student_id");
-
-      // Prevent redirect loop
+      // Student pages
       if (
-        window.location.pathname !== "/" &&
-        window.location.pathname !== "/login"
+        window.location.pathname.startsWith("/dashboard") ||
+        window.location.pathname.startsWith("/quiz") ||
+        window.location.pathname.startsWith("/history") ||
+        window.location.pathname.startsWith("/profile")
       ) {
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("student");
+        localStorage.removeItem("student_id");
+
         window.location.href = "/";
+      }
+
+      // Admin pages
+      if (
+        window.location.pathname.startsWith("/admin")
+      ) {
+
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("admin");
+
+        window.location.href = "/admin/login";
       }
     }
 

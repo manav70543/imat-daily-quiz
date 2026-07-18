@@ -8,7 +8,7 @@ exports.getTodayQuiz = async (req, res) => {
     try {
 
         // Student ID comes from JWT token
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const result = await quizService.getTodayQuiz(studentId);
 
@@ -31,7 +31,7 @@ exports.getTodayQuiz = async (req, res) => {
 exports.submitQuiz = async (req, res) => {
     try {
 
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const { quiz_id, answers } = req.body;
 
@@ -60,7 +60,7 @@ exports.submitQuiz = async (req, res) => {
 exports.getQuizHistory = async (req, res) => {
     try {
 
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const result = await quizService.getQuizHistory(studentId);
 
@@ -126,7 +126,7 @@ exports.getStudentDashboard = async (req, res) => {
 
     try {
 
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const result = await quizService.getStudentDashboard(studentId);
 
@@ -148,7 +148,7 @@ exports.getWeeklyPerformance = async (req, res) => {
 
     try {
 
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const result = await quizService.getWeeklyPerformance(studentId);
 
@@ -170,7 +170,7 @@ exports.getSubjectPerformance = async (req, res) => {
 
     try {
 
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const result =
             await quizService.getSubjectPerformance(studentId);
@@ -192,7 +192,7 @@ exports.getSubjectPerformance = async (req, res) => {
 
     try {
 
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const result =
             await quizService.getSubjectPerformance(studentId);
@@ -215,7 +215,7 @@ exports.getCurrentStreak = async (req, res) => {
 
     try {
 
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const result =
             await quizService.getCurrentStreak(studentId);
@@ -277,7 +277,7 @@ exports.getAchievements = async (req, res) => {
 
 exports.getStudentXP = async (req, res) => {
   try {
-    const studentId = req.student.id;
+    const studentId = req.user.id;
 
     const result = await quizService.getStudentXP(studentId);
 
@@ -296,7 +296,7 @@ exports.getStudentProfile = async (req, res) => {
 
     try {
 
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const result =
             await quizService.getStudentProfile(studentId);
@@ -322,7 +322,7 @@ exports.getStudentHistory = async (req, res) => {
 
     try {
 
-        const studentId = req.student.id;
+        const studentId = req.user.id;
 
         const history = await quizService.getStudentHistory(studentId);
 

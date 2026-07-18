@@ -101,3 +101,14 @@ exports.getStudentAttempt = async (studentId, quizId) => {
     };
 
 };
+
+exports.deleteStudent = async (id) => {
+
+    await studentAdminModel.deleteStudent(id);
+
+    return {
+        status: 200,
+        message: "Student deleted successfully"
+    };
+
+};

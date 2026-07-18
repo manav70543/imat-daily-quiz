@@ -1,18 +1,22 @@
-import axios from "axios";
-
-const API = "http://localhost:5000/api/admin";
+import API from "../api/axios";
 
 // ========================
-// Get Questions (Pagination)
+// Get Questions
 // ========================
 export const getQuestions = async (page = 1, limit = 10) => {
 
-    const res = await axios.get(
-        `${API}/questions?page=${page}&limit=${limit}`
+    const token = localStorage.getItem("adminToken");
+
+    const { data } = await API.get(
+        `/admin/questions?page=${page}&limit=${limit}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
     );
 
-    return res.data;
-
+    return data;
 };
 
 // ========================
@@ -20,12 +24,18 @@ export const getQuestions = async (page = 1, limit = 10) => {
 // ========================
 export const searchQuestions = async (keyword) => {
 
-    const res = await axios.get(
-        `${API}/questions/search?keyword=${keyword}`
+    const token = localStorage.getItem("adminToken");
+
+    const { data } = await API.get(
+        `/admin/questions/search?keyword=${keyword}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
     );
 
-    return res.data;
-
+    return data;
 };
 
 // ========================
@@ -33,12 +43,18 @@ export const searchQuestions = async (keyword) => {
 // ========================
 export const filterBySubject = async (subject) => {
 
-    const res = await axios.get(
-        `${API}/questions/filter/subject?subject=${subject}`
+    const token = localStorage.getItem("adminToken");
+
+    const { data } = await API.get(
+        `/admin/questions/filter/subject?subject=${subject}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
     );
 
-    return res.data;
-
+    return data;
 };
 
 // ========================
@@ -46,19 +62,19 @@ export const filterBySubject = async (subject) => {
 // ========================
 export const addQuestion = async (questionData) => {
 
-    const res = await fetch(
-        `${API}/questions`,
+    const token = localStorage.getItem("adminToken");
+
+    const { data } = await API.post(
+        "/admin/questions",
+        questionData,
         {
-            method: "POST",
             headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(questionData),
+                Authorization: `Bearer ${token}`
+            }
         }
     );
 
-    return await res.json();
-
+    return data;
 };
 
 // ========================
@@ -66,19 +82,19 @@ export const addQuestion = async (questionData) => {
 // ========================
 export const updateQuestion = async (id, questionData) => {
 
-    const res = await fetch(
-        `${API}/questions/${id}`,
+    const token = localStorage.getItem("adminToken");
+
+    const { data } = await API.put(
+        `/admin/questions/${id}`,
+        questionData,
         {
-            method: "PUT",
             headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(questionData),
+                Authorization: `Bearer ${token}`
+            }
         }
     );
 
-    return await res.json();
-
+    return data;
 };
 
 // ========================
@@ -86,13 +102,16 @@ export const updateQuestion = async (id, questionData) => {
 // ========================
 export const deleteQuestion = async (id) => {
 
-    const res = await fetch(
-        `${API}/questions/${id}`,
+    const token = localStorage.getItem("adminToken");
+
+    const { data } = await API.delete(
+        `/admin/questions/${id}`,
         {
-            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         }
     );
 
-    return await res.json();
-
+    return data;
 };
