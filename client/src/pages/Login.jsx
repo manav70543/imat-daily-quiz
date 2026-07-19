@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginStudent } from "../services/authService";
 
 export default function Login() {
+
     const navigate = useNavigate();
 
     useEffect(() => {
+
         if (localStorage.getItem("token")) {
             navigate("/dashboard", { replace: true });
         }
+
     }, [navigate]);
 
     const [email, setEmail] = useState("");
@@ -16,12 +19,16 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
+
         if (!email || !password) {
+
             alert("Please enter email and password.");
             return;
+
         }
 
         try {
+
             setLoading(true);
 
             const data = await loginStudent(email, password);
@@ -40,13 +47,18 @@ export default function Login() {
             navigate("/dashboard", { replace: true });
 
         } catch (error) {
+
             alert(
                 error.response?.data?.message ||
                 "Login failed. Please check your credentials."
             );
+
         } finally {
+
             setLoading(false);
+
         }
+
     };
 
     return (
@@ -68,7 +80,12 @@ export default function Login() {
                     boxShadow: "0 0 15px rgba(0,0,0,0.1)",
                 }}
             >
-                <h1 style={{ marginBottom: "20px" }}>
+                <h1
+                    style={{
+                        marginBottom: "20px",
+                        textAlign: "center",
+                    }}
+                >
                     IMAT Daily Quiz
                 </h1>
 
@@ -81,6 +98,7 @@ export default function Login() {
                         width: "100%",
                         padding: "12px",
                         marginBottom: "15px",
+                        boxSizing: "border-box",
                     }}
                 />
 
@@ -93,6 +111,7 @@ export default function Login() {
                         width: "100%",
                         padding: "12px",
                         marginBottom: "20px",
+                        boxSizing: "border-box",
                     }}
                 />
 
@@ -106,12 +125,35 @@ export default function Login() {
                         color: "white",
                         border: "none",
                         borderRadius: "5px",
-                        opacity: loading ? 0.7 : 1,
                         cursor: loading ? "not-allowed" : "pointer",
+                        opacity: loading ? 0.7 : 1,
+                        fontSize: "16px",
+                        fontWeight: "600",
                     }}
                 >
                     {loading ? "Logging in..." : "Login"}
                 </button>
+
+                <p
+                    style={{
+                        marginTop: "20px",
+                        textAlign: "center",
+                        fontSize: "16px",
+                    }}
+                >
+                    Don't have an account?{" "}
+                    <Link
+                        to="/register"
+                        style={{
+                            color: "#2563eb",
+                            textDecoration: "none",
+                            fontWeight: "600",
+                        }}
+                    >
+                        Register
+                    </Link>
+                </p>
+
             </div>
         </div>
     );
