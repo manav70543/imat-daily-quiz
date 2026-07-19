@@ -8,6 +8,8 @@ import {
   getStudentDashboard
 } from "../services/quizService";
 
+import { changePassword } from "../services/authService";
+
 import {
   FaUserCircle,
   FaFire,
@@ -25,6 +27,11 @@ export default function Profile() {
   const [xpData, setXpData] = useState(null);
   const [streak, setStreak] = useState(0);
   const [dashboard, setDashboard] = useState(null);
+
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadProfile();
@@ -69,11 +76,55 @@ export default function Profile() {
     }
   };
 
+  const handleChangePassword = async () => {
+
+    if (
+      !oldPassword ||
+      !newPassword ||
+      !confirmPassword
+    ) {
+      alert("Please fill all fields.");
+      return;
+    }
+
+    try {
+
+      setLoading(true);
+
+      const data = await changePassword(
+        oldPassword,
+        newPassword,
+        confirmPassword
+      );
+
+      alert(data.message);
+
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+
+    } catch (err) {
+
+      alert(
+        err.response?.data?.message ||
+        "Failed to change password."
+      );
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
   if (!profile || !xpData || !dashboard) {
     return (
       <>
         <Navbar />
-        <h2 className="loading">Loading Profile...</h2>
+        <h2 className="loading">
+          Loading Profile...
+        </h2>
       </>
     );
   }
@@ -134,7 +185,9 @@ export default function Profile() {
 
             <h2>Current Streak</h2>
 
-            <h1>{streak} Day{streak !== 1 ? "s" : ""}</h1>
+            <h1>
+              {streak} Day{streak !== 1 ? "s" : ""}
+            </h1>
 
           </div>
 
@@ -171,6 +224,89 @@ export default function Profile() {
             <span>Best Score</span>
 
           </div>
+
+        </div>
+
+        <div
+          className="profile-card"
+          style={{ marginTop: "30px" }}
+        >
+
+          <h2
+            style={{
+              marginBottom: "20px",
+              textAlign: "center"
+            }}
+          >
+            🔒 Change Password
+          </h2>
+
+          <input
+            type="password"
+            placeholder="Current Password"
+            value={oldPassword}
+            onChange={(e) =>
+              setOldPassword(e.target.value)
+            }
+            style={{
+              width: "100%",
+              padding: "12px",
+              marginBottom: "15px",
+              boxSizing: "border-box"
+            }}
+          />
+
+          <input
+            type="password"
+            placeholder="New Password"
+            value={newPassword}
+            onChange={(e) =>
+              setNewPassword(e.target.value)
+            }
+            style={{
+              width: "100%",
+              padding: "12px",
+              marginBottom: "15px",
+              boxSizing: "border-box"
+            }}
+          />
+
+          <input
+            type="password"
+            placeholder="Confirm New Password"
+            value={confirmPassword}
+            onChange={(e) =>
+              setConfirmPassword(e.target.value)
+            }
+            style={{
+              width: "100%",
+              padding: "12px",
+              marginBottom: "20px",
+              boxSizing: "border-box"
+            }}
+          />
+
+          <button
+            onClick={handleChangePassword}
+            disabled={loading}
+            style={{
+              width: "100%",
+              padding: "12px",
+              background: "#2563eb",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: loading
+                ? "not-allowed"
+                : "pointer",
+              opacity: loading ? 0.7 : 1,
+              fontWeight: "600"
+            }}
+          >
+            {loading
+              ? "Updating Password..."
+              : "Change Password"}
+          </button>
 
         </div>
 

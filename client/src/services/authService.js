@@ -36,3 +36,23 @@ export const getProfile = async () => {
   const { data } = await API.get("/students/profile");
   return data;
 };
+// ===========================
+// Change Password
+// ===========================
+export const changePassword = async (
+    oldPassword,
+    newPassword,
+    confirmPassword
+) => {
+
+    const { data } = await API.put(
+        "/students/change-password",
+        {
+            oldPassword,
+            newPassword,
+            confirmPassword
+        }
+    );
+
+    return data;
+};

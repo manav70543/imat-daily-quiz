@@ -1,35 +1,72 @@
 const db = require("../config/db");
 
 exports.findStudentByEmail = async (email) => {
+
     const [rows] = await db.query(
         "SELECT * FROM students WHERE email = ?",
         [email]
     );
 
     return rows;
+
 };
 
-exports.createStudent = async (full_name, email, password) => {
+exports.createStudent = async (
+    full_name,
+    email,
+    password,
+    verificationToken,
+    verificationExpiry
+) => {
+
     const [result] = await db.query(
-        `INSERT INTO students (full_name, email, password)
-         VALUES (?, ?, ?)`,
-        [full_name, email, password]
+        `
+        INSERT INTO students
+        (
+            full_name,
+            email,
+            password,
+            email_verified,
+            verification_token,
+            verification_token_expiry
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+        `,
+        [
+            full_name,
+            email,
+            password,
+            0,
+            verificationToken,
+            verificationExpiry
+        ]
     );
 
     return result;
+
 };
 
 exports.findStudentById = async (id) => {
+
     const [rows] = await db.query(
-        "SELECT id, full_name, email, created_at FROM students WHERE id = ?",
+        `
+        SELECT
+            id,
+            full_name,
+            email,
+            created_at
+        FROM students
+        WHERE id = ?
+        `,
         [id]
     );
 
     return rows;
+
 };
+
 exports.getStudentDetails = async (id) => {
 
-    // Student Info
     const [studentRows] = await db.query(
         `
         SELECT
@@ -49,7 +86,6 @@ exports.getStudentDetails = async (id) => {
         return null;
     }
 
-    // Statistics
     const [[stats]] = await db.query(
         `
         SELECT
@@ -63,7 +99,6 @@ exports.getStudentDetails = async (id) => {
         [id]
     );
 
-    // Quiz History
     const [history] = await db.query(
         `
         SELECT

@@ -1,5 +1,8 @@
 const studentService = require("../services/studentService");
 
+// ===========================
+// Register Student
+// ===========================
 exports.registerStudent = async (req, res) => {
 
     const result = await studentService.register(req.body);
@@ -10,6 +13,9 @@ exports.registerStudent = async (req, res) => {
 
 };
 
+// ===========================
+// Login Student
+// ===========================
 exports.loginStudent = async (req, res) => {
 
     const result = await studentService.login(req.body);
@@ -18,13 +24,21 @@ exports.loginStudent = async (req, res) => {
 
 };
 
+// ===========================
+// Get Profile
+// ===========================
 exports.getProfile = async (req, res) => {
 
-    const result = await studentService.getProfile(req.user.id);
+    const result =
+        await studentService.getProfile(req.user.id);
 
     res.status(result.status).json(result);
 
 };
+
+// ===========================
+// Student Details
+// ===========================
 exports.getStudentDetails = async (req, res) => {
 
     try {

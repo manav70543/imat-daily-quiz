@@ -11,8 +11,10 @@ const {
     loginValidation
 } = require("../validators/authValidator");
 
-
+// ===========================
 // Register
+// ===========================
+
 router.post(
     "/register",
     registerValidation,
@@ -20,7 +22,10 @@ router.post(
     studentController.registerStudent
 );
 
+// ===========================
 // Login
+// ===========================
+
 router.post(
     "/login",
     loginValidation,
@@ -28,7 +33,10 @@ router.post(
     studentController.loginStudent
 );
 
+// ===========================
 // Profile
+// ===========================
+
 router.get(
     "/profile",
     authMiddleware,

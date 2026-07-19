@@ -33,16 +33,9 @@ export default function Login() {
 
             const data = await loginStudent(email, password);
 
-            console.log("LOGIN RESPONSE:", data);
-
             localStorage.setItem("token", data.token);
             localStorage.setItem("student", JSON.stringify(data.student));
             localStorage.setItem("student_id", data.student.id);
-
-            console.log(
-                "Stored student_id:",
-                localStorage.getItem("student_id")
-            );
 
             navigate("/dashboard", { replace: true });
 
@@ -134,9 +127,29 @@ export default function Login() {
                     {loading ? "Logging in..." : "Login"}
                 </button>
 
+                {/* Forgot Password */}
                 <p
                     style={{
-                        marginTop: "20px",
+                        marginTop: "15px",
+                        textAlign: "center",
+                    }}
+                >
+                    <Link
+                        to="/forgot-password"
+                        style={{
+                            color: "#2563eb",
+                            textDecoration: "none",
+                            fontWeight: "600",
+                        }}
+                    >
+                        Forgot Password?
+                    </Link>
+                </p>
+
+                {/* Register */}
+                <p
+                    style={{
+                        marginTop: "15px",
                         textAlign: "center",
                         fontSize: "16px",
                     }}

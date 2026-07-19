@@ -20,7 +20,17 @@ import QuizStudents from "./pages/QuizStudents";
 import StudentAttempt from "./pages/StudentAttempt";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
+
+import { useLocation } from "react-router-dom";
+
+function Debug() {
+    const location = useLocation();
+    console.log(location.pathname);
+    return null;
+}
 function App() {
   return (
     <Routes>
@@ -36,6 +46,16 @@ function App() {
         <Route path="/history" element={<History />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
+      <Route
+        path="/forgot-password"
+        element={<ForgotPassword />}
+      />
+
+      <Route
+        path="/reset-password/:token"
+        element={<ResetPassword />}
+      />
+      
 
       {/* Admin Routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
