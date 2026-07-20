@@ -567,3 +567,37 @@ exports.getStudentHistory = async (studentId) => {
 
     return rows;
 };
+// ==========================
+// Quiz Attempt Details
+// ==========================
+exports.getQuizAttemptDetails = async (studentId, quizId) => {
+
+    console.log("MODEL studentId =", studentId);
+    console.log("MODEL quizId =", quizId);
+
+    const [rows] = await db.query(
+        `
+        SELECT
+            q.id,
+            q.question,
+            q.subject,
+            q.option_a,
+            q.option_b,
+            q.option_c,
+            q.option_d,
+            q.correct_option,
+            sa.selected_option
+        FROM student_answers sa
+        JOIN questions q
+            ON sa.question_id = q.id
+        WHERE sa.student_id = ?
+        AND sa.quiz_id = ?
+        ORDER BY q.id
+        `,
+        [studentId, quizId]
+    );
+
+    console.log("ROWS FOUND =", rows.length);
+
+    return rows;
+};

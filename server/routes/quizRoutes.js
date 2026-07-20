@@ -30,6 +30,14 @@ router.get(
     authMiddleware,
     quizController.getStudentHistory
 );
+// ==========================
+// Quiz Attempt Details
+// ==========================
+router.get(
+    "/history/:quizId",
+    authMiddleware,
+    quizController.getQuizAttemptDetails
+);
 
 // ==========================
 // Leaderboard

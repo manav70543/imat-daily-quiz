@@ -343,3 +343,35 @@ exports.getStudentHistory = async (req, res) => {
     }
 
 };
+// ==========================
+// Quiz Attempt Details
+// ==========================
+exports.getQuizAttemptDetails = async (req, res) => {
+
+    console.log("JWT studentId =", req.user.id);
+    console.log("PARAM quizId =", req.params.quizId);
+
+    try {
+
+        const studentId = req.user.id;
+        const { quizId } = req.params;
+
+        const result =
+            await quizService.getQuizAttemptDetails(
+                studentId,
+                quizId
+            );
+
+        res.status(result.status).json(result);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+
+    }
+
+};

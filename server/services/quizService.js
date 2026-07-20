@@ -358,11 +358,71 @@ exports.getStudentProfile = async (studentId) => {
 // ==========================
 // Student Quiz History
 // ==========================
-
 exports.getStudentHistory = async (studentId) => {
 
-    const history = await quizModel.getStudentHistory(studentId);
+    const history =
+        await quizModel.getStudentHistory(studentId);
 
-    return history;
+    const formattedHistory = history.map(item => ({
+
+        quiz_id: item.quiz_id,
+
+        quiz_date: item.quiz_date,
+
+        score: item.score,
+
+        total_questions: item.total_questions,
+
+        percentage: Number(
+            ((item.score / item.total_questions) * 100).toFixed(2)
+        )
+
+    }));
+
+    return {
+        status: 200,
+        history: formattedHistory
+    };
+
+};
+// ==========================
+// Quiz Attempt Details
+// ==========================
+exports.getQuizAttemptDetails = async (studentId, quizId) => {
+
+    const questions =
+        await quizModel.getQuizAttemptDetails(
+            studentId,
+            quizId
+        );
+
+    const formatted = questions.map((question) => ({
+
+        id: question.id,
+
+        subject: question.subject,
+
+        question: question.question,
+
+        options: {
+            A: question.option_a,
+            B: question.option_b,
+            C: question.option_c,
+            D: question.option_d
+        },
+
+        selectedAnswer: question.selected_option,
+
+        correctAnswer: question.correct_option,
+
+        isCorrect:
+            question.selected_option === question.correct_option
+
+    }));
+
+    return {
+        status: 200,
+        questions: formatted
+    };
 
 };
