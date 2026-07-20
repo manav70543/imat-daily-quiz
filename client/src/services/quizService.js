@@ -77,5 +77,13 @@ export const getStudentProfile = async () => {
 // ==========================
 export const getStudentHistory = async () => {
     const { data } = await API.get("/quizzes/student/history");
+    return data.history;
+};
+
+// ==========================
+// Quiz Attempt Details
+// ==========================
+export const getQuizAttemptDetails = async (quizId) => {
+    const { data } = await API.get(`/quizzes/history/${quizId}`);
     return data;
 };
