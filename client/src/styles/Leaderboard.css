@@ -1,0 +1,115 @@
+.leaderboard-container {
+
+    padding: 40px 20px;
+    background: #f5f7fb;
+    min-height: calc(100vh - 70px);
+
+}
+
+.leaderboard-card {
+
+    max-width: 900px;
+    margin: auto;
+
+    background: white;
+
+    border-radius: 16px;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+
+    overflow: hidden;
+
+}
+
+.leaderboard-card h1 {
+
+    margin: 0;
+    padding: 25px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 32px;
+
+}
+
+.leaderboard-card p {
+
+    margin: 20px 25px;
+
+    color: #666;
+
+    font-size: 16px;
+
+}
+
+.leaderboard-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+}
+
+.leaderboard-table thead {
+
+    background: #eef4ff;
+
+}
+
+.leaderboard-table th {
+
+    padding: 18px;
+
+    font-size: 16px;
+
+    text-align: center;
+
+    color: #1f2937;
+
+}
+
+.leaderboard-table td {
+
+    padding: 18px;
+
+    text-align: center;
+
+    border-top: 1px solid #eee;
+
+}
+
+.leaderboard-table tbody tr {
+
+    transition: .25s;
+
+}
+
+.leaderboard-table tbody tr:hover {
+
+    background: #f8fbff;
+
+}
+
+.score-badge {
+
+    background: #2563eb;
+
+    color: white;
+
+    padding: 8px 14px;
+
+    border-radius: 30px;
+
+    font-weight: bold;
+
+}
+
+.empty {
+
+    padding: 50px;
+
+    color: gray;
+
+}

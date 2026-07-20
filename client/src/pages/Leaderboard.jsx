@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { getLeaderboard } from "../services/leaderboardService";
+import "../styles/leaderboard.css";
 
 export default function Leaderboard() {
+
     const [leaders, setLeaders] = useState([]);
 
     useEffect(() => {
@@ -10,49 +12,108 @@ export default function Leaderboard() {
     }, []);
 
     const fetchLeaderboard = async () => {
+
         try {
+
             const data = await getLeaderboard();
 
-            console.log(data);
-
             setLeaders(data.leaderboard || []);
+
         } catch (err) {
+
             console.error(err);
+
         }
+
+    };
+
+    const getMedal = (rank) => {
+
+        if (rank === 1) return "🥇";
+        if (rank === 2) return "🥈";
+        if (rank === 3) return "🥉";
+
+        return rank;
+
     };
 
     return (
         <>
             <Navbar />
 
-            <div style={{ padding: "30px" }}>
-                <h1>Leaderboard</h1>
+            <div className="leaderboard-container">
 
-                <table
-                    border="1"
-                    cellPadding="10"
-                    width="100%"
-                    style={{ marginTop: "20px" }}
-                >
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                        </tr>
-                    </thead>
+                <div className="leaderboard-card">
 
-                    <tbody>
-                        {leaders.map((student, index) => (
-                            <tr key={student.id}>
-                                <td>{index + 1}</td>
-                                <td>{student.name}</td>
-                                <td>{student.score}</td>
+                    <h1>🏆 Leaderboard</h1>
+
+                    <p>
+                        Compete with other students and climb the rankings.
+                    </p>
+
+                    <table className="leaderboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Rank</th>
+
+                                <th>Student</th>
+
+                                <th>Score</th>
+
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+
+                        </thead>
+
+                        <tbody>
+
+                            {leaders.length > 0 ? (
+
+                                leaders.map((student, index) => (
+
+                                    <tr key={student.id}>
+
+                                        <td>
+                                            {getMedal(index + 1)}
+                                        </td>
+
+                                        <td>{student.name}</td>
+
+                                        <td>
+                                            <span className="score-badge">
+                                                {Number(student.score).toFixed(2)}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                            ) : (
+
+                                <tr>
+
+                                    <td colSpan="3" className="empty">
+
+                                        No leaderboard data available.
+
+                                    </td>
+
+                                </tr>
+
+                            )}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
+
         </>
     );
+
 }
