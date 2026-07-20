@@ -1,0 +1,101 @@
+:root{
+
+    --bg:#f5f7fb;
+
+    --surface:#ffffff;
+
+    --surface-2:#f9fafb;
+
+    --text:#111827;
+
+    --text-light:#6b7280;
+
+    --primary:#2563eb;
+
+    --secondary:#3b82f6;
+
+    --success:#10b981;
+
+    --warning:#f59e0b;
+
+    --purple:#8b5cf6;
+
+    --danger:#ef4444;
+
+    --border:#dbe4f0;
+
+    --shadow:0 10px 25px rgba(0,0,0,.08);
+
+    --shadow-hover:0 20px 45px rgba(0,0,0,.16);
+
+    --radius:20px;
+
+}
+
+/* ================= DARK ================= */
+
+[data-theme="dark"]{
+
+    --bg:#0f172a;
+
+    --surface:#172033;
+
+    --surface-2:#1e293b;
+
+    --text:#f8fafc;
+
+    --text-light:#cbd5e1;
+
+    --primary:#3b82f6;
+
+    --secondary:#60a5fa;
+
+    --success:#34d399;
+
+    --warning:#fbbf24;
+
+    --purple:#a78bfa;
+
+    --danger:#f87171;
+
+    --border:#2d3b52;
+
+    --shadow:0 12px 30px rgba(0,0,0,.45);
+
+    --shadow-hover:0 18px 40px rgba(0,0,0,.6);
+
+}
+
+/* ================= NAHL'S SPECIAL ================= */
+
+[data-theme="nahls-special"]{
+
+    --bg:#0b1020;
+
+    --surface:rgba(24,20,42,.92);
+
+    --surface-2:rgba(34,28,58,.95);
+
+    --text:#ffffff;
+
+    --text-light:#d7d3e8;
+
+    --primary:#ff4fa3;
+
+    --secondary:#a855f7;
+
+    --success:#43d98f;
+
+    --warning:#ffb84d;
+
+    --purple:#d783ff;
+
+    --danger:#ff7f7f;
+
+    --border:rgba(255,255,255,.08);
+
+    --shadow:0 12px 35px rgba(255,79,163,.18);
+
+    --shadow-hover:0 18px 45px rgba(255,79,163,.30);
+
+}

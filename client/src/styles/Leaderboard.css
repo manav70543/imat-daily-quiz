@@ -1,115 +1,73 @@
 .leaderboard-container {
-
     padding: 40px 20px;
-    background: #f5f7fb;
+    background: var(--bg);
     min-height: calc(100vh - 70px);
-
 }
 
 .leaderboard-card {
-
     max-width: 900px;
     margin: auto;
-
-    background: white;
-
-    border-radius: 16px;
-
-    box-shadow: 0 8px 25px rgba(0,0,0,.08);
-
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     overflow: hidden;
-
 }
 
 .leaderboard-card h1 {
-
     margin: 0;
     padding: 25px;
-
-    background: #2563eb;
-
+    background: var(--primary);
     color: white;
-
     font-size: 32px;
-
 }
 
 .leaderboard-card p {
-
     margin: 20px 25px;
-
-    color: #666;
-
+    color: var(--text-light);
     font-size: 16px;
-
 }
 
 .leaderboard-table {
-
     width: 100%;
-
     border-collapse: collapse;
-
 }
 
 .leaderboard-table thead {
-
-    background: #eef4ff;
-
+    background: var(--surface-2);
 }
 
 .leaderboard-table th {
-
     padding: 18px;
-
     font-size: 16px;
-
     text-align: center;
-
-    color: #1f2937;
-
+    color: var(--text);
 }
 
 .leaderboard-table td {
-
     padding: 18px;
-
     text-align: center;
-
-    border-top: 1px solid #eee;
-
+    color: var(--text);
+    border-top: 1px solid var(--border);
 }
 
 .leaderboard-table tbody tr {
-
     transition: .25s;
-
 }
 
 .leaderboard-table tbody tr:hover {
-
-    background: #f8fbff;
-
+    background: rgba(59, 130, 246, .08);
 }
 
 .score-badge {
-
-    background: #2563eb;
-
+    background: var(--primary);
     color: white;
-
     padding: 8px 14px;
-
     border-radius: 30px;
-
     font-weight: bold;
-
 }
 
 .empty {
-
     padding: 50px;
-
-    color: gray;
-
+    color: var(--text-light);
 }

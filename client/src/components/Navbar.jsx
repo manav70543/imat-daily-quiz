@@ -1,39 +1,66 @@
 import { Link } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
+
+import "./Navbar.css";
 
 export default function Navbar() {
-  return (
-    <nav
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "15px 30px",
-        background: "#2563eb",
-        color: "white",
-      }}
-    >
-      <h2>IMAT Quiz</h2>
 
-      <div style={{ display: "flex", gap: "20px" }}>
-        <Link to="/dashboard" style={{ color: "white" }}>
+  const { theme, changeTheme } = useTheme();
+
+  return (
+
+    <nav className="navbar">
+
+      <h2 className="logo">
+        🎓 IMAT Quiz
+      </h2>
+
+      <div className="nav-links">
+
+        <Link to="/dashboard">
           Dashboard
         </Link>
 
-        <Link to="/quiz" style={{ color: "white" }}>
+        <Link to="/quiz">
           Quiz
         </Link>
 
-        <Link to="/leaderboard" style={{ color: "white" }}>
+        <Link to="/leaderboard">
           Leaderboard
         </Link>
 
-        <Link to="/history" style={{ color: "white" }}>
+        <Link to="/history">
           History
         </Link>
 
-        <Link to="/profile" style={{ color: "white" }}>
+        <Link to="/profile">
           Profile
         </Link>
+
+        <select
+          className="theme-select"
+          value={theme}
+          onChange={(e)=>changeTheme(e.target.value)}
+        >
+
+          <option value="default">
+            🤍 Default
+          </option>
+
+          <option value="dark">
+            🌙 Dark
+          </option>
+
+          <option value="nahls-special">
+            💖 Nahl's Special
+          </option>
+
+        </select>
+
       </div>
+
     </nav>
+
   );
+
 }

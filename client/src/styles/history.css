@@ -1,0 +1,176 @@
+.history-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+    color: var(--text);
+}
+
+.history-title {
+    margin-bottom: 10px;
+    font-size: 36px;
+    color: var(--text);
+}
+
+.history-subtitle {
+    margin-bottom: 25px;
+    color: var(--text-light);
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.history-table thead {
+    background: var(--primary);
+}
+
+.history-table th {
+    padding: 16px;
+    color: white;
+    text-align: center;
+    font-weight: 600;
+}
+
+.history-table td {
+    padding: 16px;
+    text-align: center;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+}
+
+.history-table tbody tr:hover {
+    background: rgba(59,130,246,.08);
+}
+
+.pass {
+    color: var(--success);
+    font-weight: bold;
+}
+
+.fail {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+.review-btn {
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.review-btn:hover {
+    opacity: .9;
+}
+
+.review-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.review-card {
+    width: 900px;
+    max-width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-hover);
+    padding: 30px;
+    color: var(--text);
+}
+
+.review-card h2 {
+    color: var(--text);
+}
+
+.review-card h3 {
+    margin: 20px 0;
+    color: var(--text);
+}
+
+.options {
+    margin-top: 25px;
+}
+
+.option {
+    padding: 15px;
+    margin-bottom: 12px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+.option.correct {
+    background: rgba(52,211,153,.18);
+    border-color: var(--success);
+}
+
+.option.wrong {
+    background: rgba(248,113,113,.18);
+    border-color: var(--danger);
+}
+
+.review-info {
+    margin-top: 20px;
+    line-height: 2;
+}
+
+.review-info p {
+    color: var(--text);
+}
+
+.correct-text {
+    color: var(--success);
+    font-weight: bold;
+}
+
+.wrong-text {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+.review-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.nav-btn {
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.nav-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.close-btn {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    background: var(--danger);
+    color: white;
+    cursor: pointer;
+}

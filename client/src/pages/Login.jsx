@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginStudent } from "../services/authService";
+import "../styles/login.css";
 
 export default function Login() {
 
@@ -55,44 +56,17 @@ export default function Login() {
     };
 
     return (
-        <div
-            style={{
-                height: "100vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                background: "#f5f7fb",
-            }}
-        >
-            <div
-                style={{
-                    width: "400px",
-                    background: "white",
-                    padding: "30px",
-                    borderRadius: "10px",
-                    boxShadow: "0 0 15px rgba(0,0,0,0.1)",
-                }}
-            >
-                <h1
-                    style={{
-                        marginBottom: "20px",
-                        textAlign: "center",
-                    }}
-                >
-                    IMAT Daily Quiz
-                </h1>
+        <div className="login-page">
+
+            <div className="login-card">
+
+                <h1>IMAT Daily Quiz</h1>
 
                 <input
                     type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        marginBottom: "15px",
-                        boxSizing: "border-box",
-                    }}
                 />
 
                 <input
@@ -100,74 +74,31 @@ export default function Login() {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        marginBottom: "20px",
-                        boxSizing: "border-box",
-                    }}
                 />
 
                 <button
                     onClick={handleLogin}
                     disabled={loading}
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        background: "#2563eb",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: loading ? "not-allowed" : "pointer",
-                        opacity: loading ? 0.7 : 1,
-                        fontSize: "16px",
-                        fontWeight: "600",
-                    }}
+                    className="login-btn"
                 >
                     {loading ? "Logging in..." : "Login"}
                 </button>
 
-                {/* Forgot Password */}
-                <p
-                    style={{
-                        marginTop: "15px",
-                        textAlign: "center",
-                    }}
-                >
-                    <Link
-                        to="/forgot-password"
-                        style={{
-                            color: "#2563eb",
-                            textDecoration: "none",
-                            fontWeight: "600",
-                        }}
-                    >
+                <p className="login-link">
+                    <Link to="/forgot-password">
                         Forgot Password?
                     </Link>
                 </p>
 
-                {/* Register */}
-                <p
-                    style={{
-                        marginTop: "15px",
-                        textAlign: "center",
-                        fontSize: "16px",
-                    }}
-                >
+                <p className="login-register">
                     Don't have an account?{" "}
-                    <Link
-                        to="/register"
-                        style={{
-                            color: "#2563eb",
-                            textDecoration: "none",
-                            fontWeight: "600",
-                        }}
-                    >
+                    <Link to="/register">
                         Register
                     </Link>
                 </p>
 
             </div>
+
         </div>
     );
 }

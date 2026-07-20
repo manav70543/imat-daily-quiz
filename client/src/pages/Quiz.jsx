@@ -124,7 +124,7 @@ export default function Quiz() {
 
     }
 
-    
+
     if (alreadySubmitted) {
         // Student already submitted today's quiz
         const scoreColor =
@@ -133,7 +133,7 @@ export default function Quiz() {
                 : result?.percentage >= 50
                     ? "#f59e0b"
                     : "#ef4444";
-    
+
         const resultMessage =
             result?.percentage >= 90
                 ? "Outstanding! 🎉"
@@ -174,7 +174,10 @@ export default function Quiz() {
 
                     </div>
 
-                    <h2 style={{ marginTop: 40 }}>
+                    <h2
+                        className="review-title"
+                        style={{ marginTop: 40 }}
+                    >
                         Review Answers
                     </h2>
 
@@ -185,7 +188,7 @@ export default function Quiz() {
                             className="quiz-card"
                         >
 
-                            <h3>
+                            <h3 className="review-question">
                                 {index + 1}. {item.question}
                             </h3>
 
@@ -204,20 +207,38 @@ export default function Quiz() {
                                     option !== item.correctAnswer
                                 )
                                     className += " wrong-option";
-
+                                console.log({
+                                    option,
+                                    text,
+                                    yourAnswer: item.yourAnswer,
+                                    correctAnswer: item.correctAnswer
+                                });
                                 return (
 
                                     <div
                                         key={option}
                                         className={className}
+                                        style={{
+                                            background:
+                                                option === item.correctAnswer
+                                                    ? "limegreen"
+                                                    : option === item.yourAnswer
+                                                        ? "red"
+                                                        : "white",
+                                            color: "black"
+                                        }}
                                     >
-                                        <strong>{option}.</strong> {text}
+                                        <strong>{option}.</strong>{" "}
+                                        {text}
                                     </div>
 
                                 );
 
                             })}
-                            <p style={{ marginTop: 15 }}>
+                            <p
+                                className="review-answer"
+                                style={{ marginTop: 15 }}
+                            >
 
                                 <strong>Your Answer:</strong>{" "}
                                 {item.yourAnswer === "Not Answered"
@@ -232,11 +253,11 @@ export default function Quiz() {
                             </p>
 
                             <div
-                                style={{
-                                    marginTop: 12,
-                                    fontWeight: "bold",
-                                    color: item.correct ? "#16a34a" : "#dc2626"
-                                }}
+                                className={
+                                    item.correct
+                                        ? "review-status correct-status"
+                                        : "review-status wrong-status"
+                                }
                             >
                                 {item.correct ? "✅ Correct Answer" : "❌ Wrong Answer"}
                             </div>
@@ -320,7 +341,7 @@ export default function Quiz() {
                             marginTop: 12,
                             display: "flex",
                             justifyContent: "space-between",
-                            color: "#6b7280",
+                            color: "var(--text-light)",
                             fontWeight: 600
                         }}
                     >

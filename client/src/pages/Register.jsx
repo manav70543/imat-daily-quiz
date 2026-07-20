@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerStudent } from "../services/authService";
+import "../styles/auth.css";
 
 export default function Register() {
 
@@ -47,101 +48,58 @@ export default function Register() {
 
     };
 
-    return (
+   return (
 
-        <div
-            style={{
-                height: "100vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                background: "#f5f7fb",
-            }}
-        >
+    <div className="login-page">
 
-            <div
-                style={{
-                    width: "400px",
-                    background: "white",
-                    padding: "30px",
-                    borderRadius: "10px",
-                    boxShadow: "0 0 15px rgba(0,0,0,0.1)",
-                }}
+        <div className="login-card">
+
+            <h1>Create Account</h1>
+
+            <p className="login-subtitle">
+                Join IMAT Daily Quiz and start practicing.
+            </p>
+
+            <input
+                type="text"
+                placeholder="Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+            />
+
+            <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <button
+                className="login-btn"
+                onClick={handleRegister}
+                disabled={loading}
             >
+                {loading ? "Registering..." : "Register"}
+            </button>
 
-                <h1 style={{ marginBottom: "20px" }}>
-                    IMAT Daily Quiz
-                </h1>
-
-                <input
-                    type="text"
-                    placeholder="Full Name"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        marginBottom: "15px",
-                    }}
-                />
-
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        marginBottom: "15px",
-                    }}
-                />
-
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        marginBottom: "20px",
-                    }}
-                />
-
-                <button
-                    onClick={handleRegister}
-                    disabled={loading}
-                    style={{
-                        width: "100%",
-                        padding: "12px",
-                        background: "#2563eb",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        opacity: loading ? 0.7 : 1,
-                        cursor: "pointer",
-                    }}
-                >
-                    {loading ? "Registering..." : "Register"}
-                </button>
-
-                <p
-                    style={{
-                        marginTop: "20px",
-                        textAlign: "center",
-                    }}
-                >
-                    Already have an account?{" "}
-                    <Link to="/">
-                        Login
-                    </Link>
-                </p>
-
-            </div>
+            <p className="login-register">
+                Already have an account?{" "}
+                <Link to="/">
+                    Login
+                </Link>
+            </p>
 
         </div>
 
-    );
+    </div>
+
+);
 
 }
