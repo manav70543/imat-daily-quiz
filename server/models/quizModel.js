@@ -1,30 +1,123 @@
 const db = require("../config/db");
 
+// ======================================================
 // Find today's quiz
+// ======================================================
+
 exports.findTodayQuiz = async (quizDate) => {
+
     const [rows] = await db.query(
-        "SELECT * FROM daily_quizzes WHERE quiz_date = ?",
+        `
+        SELECT *
+        FROM daily_quizzes
+        WHERE quiz_date = ?
+        LIMIT 1
+        `,
         [quizDate]
     );
 
     return rows;
 };
 
+
+// ======================================================
+// Get cycle number for the next daily quiz
+//
+// RULE:
+// - Each cycle contains exactly 30 generated daily quizzes
+// - 30 quizzes × 10 questions/subject = 300 questions/subject
+// - After 30 quizzes, a new cycle starts
+//
+// Old quizzes where cycle_number IS NULL are ignored.
+// ======================================================
+
+exports.getCycleNumberForNewQuiz = async () => {
+
+    // Find the latest cycle that belongs to the new
+    // rotation system.
+    const [rows] = await db.query(
+        `
+        SELECT
+            cycle_number,
+            COUNT(*) AS quiz_count
+        FROM daily_quizzes
+        WHERE cycle_number IS NOT NULL
+        GROUP BY cycle_number
+        ORDER BY cycle_number DESC
+        LIMIT 1
+        `
+    );
+
+    // No cycle exists yet.
+    // Start Cycle 1.
+    if (rows.length === 0) {
+        return 1;
+    }
+
+    const currentCycle = Number(rows[0].cycle_number);
+    const quizCount = Number(rows[0].quiz_count);
+
+    // A cycle contains 30 actual generated quizzes.
+    if (quizCount >= 30) {
+        return currentCycle + 1;
+    }
+
+    return currentCycle;
+};
+
+
+// ======================================================
 // Create today's quiz
-exports.createTodayQuiz = async (quizDate) => {
+// ======================================================
+
+exports.createTodayQuiz = async (quizDate, cycleNumber) => {
+
     const [result] = await db.query(
-        "INSERT INTO daily_quizzes (quiz_date) VALUES (?)",
-        [quizDate]
+        `
+        INSERT INTO daily_quizzes
+        (quiz_date, cycle_number)
+        VALUES (?, ?)
+        `,
+        [
+            quizDate,
+            cycleNumber
+        ]
     );
 
     return result.insertId;
 };
 
-// Get 50 questions:
-// 10 from each subject
-// Only active questions
-// Prefer questions never used in previous daily quizzes
-exports.getRandomQuestions = async () => {
+
+// ======================================================
+// Get 50 questions for today's quiz
+//
+// 10 questions from:
+// - Biology
+// - Chemistry
+// - Physics
+// - Mathematics
+// - Logical Reasoning
+//
+// ROTATION SYSTEM:
+//
+// Every subject contains 300 active questions.
+//
+// 10 questions per subject/day
+//
+// Therefore:
+//
+// 300 / 10 = 30 quiz days per cycle.
+//
+// Questions cannot repeat WITHIN the same cycle.
+//
+// When Cycle 2 starts, Cycle 1 questions become
+// available again.
+//
+// Old quizzes where cycle_number IS NULL do not affect
+// the new rotation.
+// ======================================================
+
+exports.getRandomQuestions = async (cycleNumber) => {
 
     const subjects = [
         "Biology",
@@ -36,116 +129,145 @@ exports.getRandomQuestions = async () => {
 
     const QUESTIONS_PER_SUBJECT = 10;
 
-    let allQuestions = [];
+    const allQuestions = [];
+
+
+    // ==================================================
+    // Process each subject independently
+    // ==================================================
 
     for (const subject of subjects) {
 
-        // First try to get questions that have NEVER
-        // appeared in any previous daily quiz
+
+        // --------------------------------------------------
+        // STEP 1
+        // Make sure the subject has enough active questions
+        // --------------------------------------------------
+
+        const [[activeResult]] = await db.query(
+            `
+            SELECT COUNT(*) AS total
+            FROM questions
+            WHERE subject = ?
+              AND is_active = 1
+            `,
+            [subject]
+        );
+
+
+        const totalActive = Number(activeResult.total);
+
+
+        if (totalActive < QUESTIONS_PER_SUBJECT) {
+
+            throw new Error(
+                `${subject} does not have enough active questions. ` +
+                `Required: ${QUESTIONS_PER_SUBJECT}, ` +
+                `Available: ${totalActive}.`
+            );
+
+        }
+
+
+        // --------------------------------------------------
+        // STEP 2
+        //
+        // Select questions that have NOT been used
+        // during the CURRENT cycle.
+        //
+        // IMPORTANT:
+        //
+        // We join:
+        //
+        // daily_quiz_questions
+        //       ↓
+        // daily_quizzes
+        //
+        // and only exclude questions where:
+        //
+        // cycle_number = current cycle
+        //
+        // Therefore previous cycles do NOT block questions.
+        // --------------------------------------------------
+
         const [unusedRows] = await db.query(
             `
             SELECT q.id
+
             FROM questions q
 
             WHERE q.subject = ?
               AND q.is_active = 1
 
               AND NOT EXISTS (
+
                   SELECT 1
+
                   FROM daily_quiz_questions dqq
+
+                  JOIN daily_quizzes dq
+                    ON dq.id = dqq.daily_quiz_id
+
                   WHERE dqq.question_id = q.id
+                    AND dq.cycle_number = ?
+
               )
 
             ORDER BY RAND()
+
             LIMIT ?
             `,
             [
                 subject,
+                cycleNumber,
                 QUESTIONS_PER_SUBJECT
             ]
         );
 
-        let selectedQuestions = [...unusedRows];
 
-        // If fewer than 10 unused questions remain,
-        // fill the remaining slots using active questions.
+        // --------------------------------------------------
+        // STEP 3
         //
-        // This prevents the quiz system from stopping
-        // after the entire question bank has been used.
-        if (
-            selectedQuestions.length <
-            QUESTIONS_PER_SUBJECT
-        ) {
+        // Under the normal 300-question system this should
+        // ALWAYS return exactly 10 questions until the
+        // 30th quiz of the cycle.
+        // --------------------------------------------------
 
-            const remaining =
-                QUESTIONS_PER_SUBJECT -
-                selectedQuestions.length;
-
-            const selectedIds =
-                selectedQuestions.map(q => q.id);
-
-            let query = `
-                SELECT q.id
-                FROM questions q
-                WHERE q.subject = ?
-                  AND q.is_active = 1
-            `;
-
-            const params = [subject];
-
-            // Don't select something we already selected
-            // above for today's quiz.
-            if (selectedIds.length > 0) {
-
-                const placeholders =
-                    selectedIds
-                        .map(() => "?")
-                        .join(",");
-
-                query += `
-                    AND q.id NOT IN (${placeholders})
-                `;
-
-                params.push(...selectedIds);
-            }
-
-            query += `
-                ORDER BY RAND()
-                LIMIT ?
-            `;
-
-            params.push(remaining);
-
-            const [fallbackRows] =
-                await db.query(
-                    query,
-                    params
-                );
-
-            selectedQuestions.push(
-                ...fallbackRows
-            );
-        }
-
-        // Safety check
-        if (
-            selectedQuestions.length <
-            QUESTIONS_PER_SUBJECT
-        ) {
+        if (unusedRows.length !== QUESTIONS_PER_SUBJECT) {
 
             throw new Error(
-                `${subject} does not have enough active questions. ` +
-                `Required: ${QUESTIONS_PER_SUBJECT}, ` +
-                `Found: ${selectedQuestions.length}.`
+                `Rotation error for ${subject} in Cycle ${cycleNumber}. ` +
+                `Expected ${QUESTIONS_PER_SUBJECT} unused questions, ` +
+                `but found ${unusedRows.length}.`
             );
 
         }
 
-        allQuestions.push(
-            ...selectedQuestions
+
+        allQuestions.push(...unusedRows);
+
+    }
+
+
+    // ==================================================
+    // FINAL SAFETY CHECK
+    // ==================================================
+
+    const EXPECTED_TOTAL =
+        subjects.length *
+        QUESTIONS_PER_SUBJECT;
+
+
+    if (allQuestions.length !== EXPECTED_TOTAL) {
+
+        throw new Error(
+            `Quiz generation failed. ` +
+            `Expected ${EXPECTED_TOTAL} questions, ` +
+            `but generated ${allQuestions.length}.`
         );
 
     }
+
 
     return allQuestions;
 

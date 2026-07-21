@@ -90,26 +90,63 @@ exports.getTodayQuiz = async (studentId) => {
         };
     }
 
+    // ======================================================
     // No quiz exists today -> create one
-    const quizId = await quizModel.createTodayQuiz(today);
+    // ======================================================
 
-    const randomQuestions = await quizModel.getRandomQuestions();
+    // Determine which rotation cycle this quiz belongs to
+    const cycleNumber =
+        await quizModel.getCycleNumberForNewQuiz();
 
+
+    // Create today's quiz and store its cycle number
+    const quizId =
+        await quizModel.createTodayQuiz(
+            today,
+            cycleNumber
+        );
+
+
+    // Get 50 questions that have NOT been used
+    // during this cycle
+    const randomQuestions =
+        await quizModel.getRandomQuestions(
+            cycleNumber
+        );
+
+
+    // Save all 50 questions into today's quiz
     for (const question of randomQuestions) {
+
         await quizModel.addQuestionToQuiz(
             quizId,
             question.id
         );
+
     }
 
-    const questions = await quizModel.getQuizQuestions(quizId);
 
+    // Fetch complete question data
+    const questions =
+        await quizModel.getQuizQuestions(
+            quizId
+        );
+
+
+    // Return today's newly created quiz
     return {
         status: 201,
+
         quiz: {
+
             id: quizId,
+
             quiz_date: today,
+
+            cycle_number: cycleNumber,
+
             questions
+
         }
     };
 };
