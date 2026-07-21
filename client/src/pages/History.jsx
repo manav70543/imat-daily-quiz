@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import ReviewModal from "../components/ReviewModal";
 
 import {
@@ -86,8 +85,6 @@ export default function History() {
 
   return (
     <>
-
-      <Navbar />
 
       <div className="history-container">
 

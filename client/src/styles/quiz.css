@@ -43,10 +43,16 @@
 .review-card {
     margin-top: 20px;
     padding: 18px;
+
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 
@@ -56,11 +62,18 @@
 
 .quiz-card {
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     border-radius: var(--radius);
+
     padding: 25px;
+
     margin: 25px 0;
-    box-shadow: var(--shadow);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .quiz-card h3 {
@@ -130,12 +143,20 @@
 
 .result-card {
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     border-radius: var(--radius);
+
     padding: 30px;
+
     margin-bottom: 40px;
+
     text-align: center;
-    box-shadow: var(--shadow);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .result-icon {
@@ -285,11 +306,18 @@
 
 .question-palette {
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     padding: 25px;
+
     border-radius: var(--radius);
+
     margin: 30px 0;
-    box-shadow: var(--shadow);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .question-palette h3 {

@@ -25,17 +25,30 @@
 
 .stat-card {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: var(--radius);
     padding: 30px;
-    box-shadow: var(--shadow);
-    transition: .3s ease;
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+
     text-align: center;
 }
 
 .stat-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-hover);
+    transform: translateY(-4px);
+
+    border-color: rgba(255, 255, 255, 0.11);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.34),
+        0 4px 12px rgba(0, 0, 0, 0.20);
 }
 .stat-icon {
     font-size: 40px;
@@ -125,18 +138,19 @@
 ========================= */
 
 .motivation-card {
-
     margin-top: 40px;
 
     background: var(--surface);
 
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.07);
 
     padding: 30px;
 
     border-radius: var(--radius);
 
-    box-shadow: var(--shadow);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 
     text-align: center;
 }
@@ -166,11 +180,18 @@
 
 .chart-card {
     margin-top: 40px;
+
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     border-radius: var(--radius);
+
     padding: 30px;
-    box-shadow: var(--shadow);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .chart-card h2 {
@@ -180,12 +201,20 @@
 
 .streak-card {
     margin: 30px 0;
+
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     border-radius: var(--radius);
+
     padding: 30px;
+
     text-align: center;
-    box-shadow: var(--shadow);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .streak-card h2 {
@@ -207,11 +236,18 @@
 
 .goal-card {
     margin-top: 30px;
+
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     border-radius: 20px;
+
     padding: 28px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .goal-card h2 {
@@ -247,11 +283,18 @@
 
 .summary-card {
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     padding: 30px;
+
     border-radius: 20px;
+
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .summary-card h3 {
@@ -283,9 +326,9 @@
 }
 
 .achievement {
-
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
 
     border-radius: 18px;
 
@@ -295,8 +338,9 @@
 
     transition: .3s;
 
-    box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
-
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .achievement h1 {
@@ -323,11 +367,19 @@
 
 .xp-card {
     margin: 30px 0;
+
     background: var(--surface);
-    border: 1px solid var(--border);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     padding: 30px;
+
     border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
+
     text-align: center;
 }
 
@@ -359,10 +411,18 @@
 
 .recent-students {
     margin-top: 40px;
+
     background: var(--surface);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
     border-radius: 18px;
+
     padding: 25px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .recent-students h2 {

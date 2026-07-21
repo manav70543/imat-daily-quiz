@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import { getLeaderboard } from "../services/leaderboardService";
 import "../styles/leaderboard.css";
 
@@ -39,8 +38,6 @@ export default function Leaderboard() {
 
     return (
         <>
-            <Navbar />
-
             <div className="leaderboard-container">
 
                 <div className="leaderboard-card">
@@ -56,13 +53,9 @@ export default function Leaderboard() {
                         <thead>
 
                             <tr>
-
                                 <th>Rank</th>
-
                                 <th>Student</th>
-
                                 <th>Score</th>
-
                             </tr>
 
                         </thead>
@@ -96,9 +89,7 @@ export default function Leaderboard() {
                                 <tr>
 
                                     <td colSpan="3" className="empty">
-
                                         No leaderboard data available.
-
                                     </td>
 
                                 </tr>
@@ -112,8 +103,6 @@ export default function Leaderboard() {
                 </div>
 
             </div>
-
         </>
     );
-
 }

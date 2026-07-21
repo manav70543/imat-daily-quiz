@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import "../styles/quiz.css";
 
 
-import Navbar from "../components/Navbar";
 import { FaCalendarAlt } from "react-icons/fa";
 import { getTodayQuiz, submitQuiz } from "../services/quizService";
 
@@ -110,16 +109,12 @@ export default function Quiz() {
         }
 
     };
-
     if (loading) {
 
         return (
-            <>
-                <Navbar />
-                <div className="quiz-container">
-                    <h2>Loading...</h2>
-                </div>
-            </>
+            <div className="quiz-container">
+                <h2>Loading...</h2>
+            </div>
         );
 
     }
@@ -145,10 +140,7 @@ export default function Quiz() {
 
         return (
             <>
-                <Navbar />
-
                 <div className="quiz-container">
-
                     <div className="result-card">
 
                         <div className="result-icon">
@@ -274,16 +266,12 @@ export default function Quiz() {
     }
 
     if (!quiz) {
-        return (
-            <>
-                <Navbar />
-                <div style={{ padding: 30 }}>
-                    <h2>No Quiz Available</h2>
-                </div>
-            </>
-        );
-
-    }
+    return (
+        <div style={{ padding: 30 }}>
+            <h2>No Quiz Available</h2>
+        </div>
+    );
+}
     const totalQuestions = quiz.questions.length;
 
     const answeredQuestions = Object.keys(answers).length;
@@ -295,10 +283,8 @@ export default function Quiz() {
         quiz.questions[currentQuestion];
 
     return (
-        <>
-            <Navbar />
-
-            <div className="quiz-container">
+    <>
+        <div className="quiz-container">
 
                 <div className="quiz-header">
 

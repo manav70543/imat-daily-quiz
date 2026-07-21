@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import {
   getStudentDashboard,
   getWeeklyPerformance,
@@ -124,21 +123,16 @@ export default function Dashboard() {
       console.error(err);
     }
   };
-
   if (!dashboard) {
     return (
-      <>
-        <Navbar />
-        <div className="dashboard-loading">
-          Loading Dashboard...
-        </div>
-      </>
+      <div className="dashboard-loading">
+        Loading Dashboard...
+      </div>
     );
   }
- console.log("xpData =", xpData);
+  console.log("xpData =", xpData);
   return (
     <>
-      <Navbar />
 
       <div className="dashboard">
 

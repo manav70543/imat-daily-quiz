@@ -38,3 +38,28 @@ select,
 textarea{
     font-family:inherit;
 }
+
+/* =========================
+   MAIN APP LAYOUT
+========================= */
+
+html,
+body,
+#root {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+.app-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+    width: 100%;
+}

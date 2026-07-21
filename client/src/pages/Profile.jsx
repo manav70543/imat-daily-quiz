@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 
 import {
   getStudentProfile,
@@ -120,19 +119,14 @@ export default function Profile() {
 
   if (!profile || !xpData || !dashboard) {
     return (
-      <>
-        <Navbar />
-        <h2 className="loading">
-          Loading Profile...
-        </h2>
-      </>
+      <h2 className="loading">
+        Loading Profile...
+      </h2>
     );
   }
 
   return (
     <>
-      <Navbar />
-
       <div className="profile">
 
         <div className="profile-card">

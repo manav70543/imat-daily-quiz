@@ -10,10 +10,9 @@
 }
 
 .profile-card {
-
     background: var(--surface);
 
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.07);
 
     padding: 40px;
 
@@ -21,8 +20,13 @@
 
     text-align: center;
 
-    box-shadow: var(--shadow);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 
+    transition:
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
 }
 
 .avatar {
@@ -85,10 +89,9 @@
 }
 
 .info-card {
-
     background: var(--surface);
 
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.07);
 
     padding: 30px;
 
@@ -96,8 +99,24 @@
 
     text-align: center;
 
-    box-shadow: var(--shadow);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(255, 255, 255, 0.11);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.34),
+        0 4px 12px rgba(0, 0, 0, 0.20);
 }
 
 .icon {
@@ -152,10 +171,9 @@
 }
 
 .stat-box {
-
     background: var(--surface);
 
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.07);
 
     border-radius: var(--radius);
 
@@ -163,8 +181,24 @@
 
     text-align: center;
 
-    box-shadow: var(--shadow);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.18);
 
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(255, 255, 255, 0.11);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.34),
+        0 4px 12px rgba(0, 0, 0, 0.20);
 }
 
 .stat-box h2 {
