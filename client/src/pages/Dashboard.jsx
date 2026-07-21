@@ -187,8 +187,8 @@ export default function Dashboard() {
 
           <p>
             {dashboard.todayCompleted
-              ? "10 / 10 Questions Completed"
-              : "0 / 10 Questions Completed"}
+              ? "50 / 50 Questions Completed"
+              : "0 / 50 Questions Completed"}
           </p>
 
         </div>

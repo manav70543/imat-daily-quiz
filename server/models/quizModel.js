@@ -20,8 +20,10 @@ exports.createTodayQuiz = async (quizDate) => {
     return result.insertId;
 };
 
-// Get 10 random questions
-// Get 50 questions (10 from each subject)
+// Get 50 questions:
+// 10 from each subject
+// Only active questions
+// Prefer questions never used in previous daily quizzes
 exports.getRandomQuestions = async () => {
 
     const subjects = [
@@ -32,28 +34,116 @@ exports.getRandomQuestions = async () => {
         "Logical Reasoning"
     ];
 
+    const QUESTIONS_PER_SUBJECT = 10;
+
     let allQuestions = [];
 
     for (const subject of subjects) {
 
-        const [rows] = await db.query(
+        // First try to get questions that have NEVER
+        // appeared in any previous daily quiz
+        const [unusedRows] = await db.query(
             `
-            SELECT id
-            FROM questions
-            WHERE subject = ?
+            SELECT q.id
+            FROM questions q
+
+            WHERE q.subject = ?
+              AND q.is_active = 1
+
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM daily_quiz_questions dqq
+                  WHERE dqq.question_id = q.id
+              )
+
             ORDER BY RAND()
-            LIMIT 10
+            LIMIT ?
             `,
-            [subject]
+            [
+                subject,
+                QUESTIONS_PER_SUBJECT
+            ]
         );
 
-        if (rows.length < 10) {
-            throw new Error(
-                `${subject} has only ${rows.length} questions. At least 10 are required.`
+        let selectedQuestions = [...unusedRows];
+
+        // If fewer than 10 unused questions remain,
+        // fill the remaining slots using active questions.
+        //
+        // This prevents the quiz system from stopping
+        // after the entire question bank has been used.
+        if (
+            selectedQuestions.length <
+            QUESTIONS_PER_SUBJECT
+        ) {
+
+            const remaining =
+                QUESTIONS_PER_SUBJECT -
+                selectedQuestions.length;
+
+            const selectedIds =
+                selectedQuestions.map(q => q.id);
+
+            let query = `
+                SELECT q.id
+                FROM questions q
+                WHERE q.subject = ?
+                  AND q.is_active = 1
+            `;
+
+            const params = [subject];
+
+            // Don't select something we already selected
+            // above for today's quiz.
+            if (selectedIds.length > 0) {
+
+                const placeholders =
+                    selectedIds
+                        .map(() => "?")
+                        .join(",");
+
+                query += `
+                    AND q.id NOT IN (${placeholders})
+                `;
+
+                params.push(...selectedIds);
+            }
+
+            query += `
+                ORDER BY RAND()
+                LIMIT ?
+            `;
+
+            params.push(remaining);
+
+            const [fallbackRows] =
+                await db.query(
+                    query,
+                    params
+                );
+
+            selectedQuestions.push(
+                ...fallbackRows
             );
         }
 
-        allQuestions.push(...rows);
+        // Safety check
+        if (
+            selectedQuestions.length <
+            QUESTIONS_PER_SUBJECT
+        ) {
+
+            throw new Error(
+                `${subject} does not have enough active questions. ` +
+                `Required: ${QUESTIONS_PER_SUBJECT}, ` +
+                `Found: ${selectedQuestions.length}.`
+            );
+
+        }
+
+        allQuestions.push(
+            ...selectedQuestions
+        );
 
     }
 
