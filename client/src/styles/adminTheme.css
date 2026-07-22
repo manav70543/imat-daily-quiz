@@ -1,0 +1,291 @@
+/* =========================================================
+   ADMIN THEME ISOLATION
+   Keeps admin dashboard independent from student themes
+   ========================================================= */
+
+.admin-layout {
+    --admin-bg: #f5f7fb;
+    --admin-surface: #ffffff;
+    --admin-surface-hover: #f7f9ff;
+
+    --admin-text: #111827;
+    --admin-text-light: #6b7280;
+
+    --admin-primary: #2563eb;
+    --admin-danger: #ef4444;
+
+    --admin-border: #e5e7eb;
+
+    background: var(--admin-bg) !important;
+    color: var(--admin-text) !important;
+
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   MAIN ADMIN CONTENT
+   ========================================================= */
+
+.admin-layout .admin-content {
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .admin-content h1,
+.admin-layout .admin-content h2,
+.admin-layout .admin-content h3,
+.admin-layout .admin-content h4,
+.admin-layout .admin-content p,
+.admin-layout .admin-content span,
+.admin-layout .admin-content label {
+    color: var(--admin-text);
+}
+
+
+/* =========================================================
+   TABLE CONTAINERS
+   ========================================================= */
+
+.admin-layout .table-container {
+    background: var(--admin-surface) !important;
+    color: var(--admin-text) !important;
+}
+
+
+/* =========================================================
+   STUDENTS / SUBJECTS TABLE
+   ========================================================= */
+
+.admin-layout .students-table {
+    background: var(--admin-surface) !important;
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .students-table thead {
+    background: var(--admin-primary);
+    color: #ffffff !important;
+}
+
+.admin-layout .students-table thead th {
+    color: #ffffff !important;
+}
+
+.admin-layout .students-table tbody td {
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .students-table tbody tr {
+    background: var(--admin-surface);
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-layout .students-table tbody tr:hover {
+    background: var(--admin-surface-hover) !important;
+}
+
+
+/* =========================================================
+   QUESTIONS TABLE
+   ========================================================= */
+
+.admin-layout .questions-table {
+    background: var(--admin-surface) !important;
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .questions-table thead {
+    background: var(--admin-primary);
+    color: #ffffff !important;
+}
+
+.admin-layout .questions-table thead th {
+    color: #ffffff !important;
+}
+
+.admin-layout .questions-table tbody td {
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .questions-table tbody tr {
+    background: var(--admin-surface);
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-layout .questions-table tbody tr:hover {
+    background: var(--admin-surface-hover) !important;
+}
+
+
+/* =========================================================
+   QUIZZES TABLE
+   ========================================================= */
+
+.admin-layout .quiz-table {
+    background: var(--admin-surface) !important;
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .quiz-table thead {
+    background: var(--admin-primary);
+    color: #ffffff !important;
+}
+
+.admin-layout .quiz-table thead th {
+    color: #ffffff !important;
+}
+
+.admin-layout .quiz-table tbody td {
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .quiz-table tbody tr {
+    background: var(--admin-surface);
+}
+
+.admin-layout .quiz-table tbody tr:hover {
+    background: var(--admin-surface-hover) !important;
+}
+
+
+/* =========================================================
+   SEARCH BOXES
+   ========================================================= */
+
+.admin-layout .search-box {
+    background: #ffffff !important;
+    color: var(--admin-text) !important;
+
+    border: 1px solid #d1d5db;
+}
+
+.admin-layout .search-box::placeholder {
+    color: #9ca3af !important;
+}
+
+.admin-layout .search-box:focus {
+    background: #ffffff !important;
+    color: var(--admin-text) !important;
+}
+
+
+/* =========================================================
+   SELECT / FILTER
+   ========================================================= */
+
+.admin-layout .filter-select {
+    background: #ffffff !important;
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .filter-select option {
+    background: #ffffff;
+    color: var(--admin-text);
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.admin-layout input,
+.admin-layout textarea,
+.admin-layout select {
+    background: #ffffff;
+    color: var(--admin-text);
+}
+
+.admin-layout input::placeholder,
+.admin-layout textarea::placeholder {
+    color: #9ca3af;
+}
+
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+
+.admin-layout .modal,
+.admin-layout .import-modal {
+    background: #ffffff !important;
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .modal h1,
+.admin-layout .modal h2,
+.admin-layout .modal h3,
+.admin-layout .modal p,
+.admin-layout .modal label,
+.admin-layout .import-modal h1,
+.admin-layout .import-modal h2,
+.admin-layout .import-modal h3,
+.admin-layout .import-modal p,
+.admin-layout .import-modal label {
+    color: var(--admin-text) !important;
+}
+
+.admin-layout .modal input,
+.admin-layout .modal select,
+.admin-layout .modal textarea,
+.admin-layout .import-modal input,
+.admin-layout .import-modal select,
+.admin-layout .import-modal textarea {
+    background: #ffffff !important;
+    color: var(--admin-text) !important;
+}
+
+
+/* =========================================================
+   EMPTY / NO DATA
+   ========================================================= */
+
+.admin-layout .no-data,
+.admin-layout .empty-row td {
+    color: var(--admin-text-light) !important;
+}
+
+
+/* =========================================================
+   BUTTONS
+   Keep button text white
+   ========================================================= */
+
+.admin-layout .view-btn,
+.admin-layout .edit-btn,
+.admin-layout .delete-btn,
+.admin-layout .add-btn,
+.admin-layout .import-btn,
+.admin-layout .save-btn,
+.admin-layout .cancel-btn,
+.admin-layout .upload-btn,
+.admin-layout .pagination button {
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   QUIZ HEADER
+   ========================================================= */
+
+.admin-layout .quiz-header,
+.admin-layout .quiz-header h1,
+.admin-layout .quiz-header h2,
+.admin-layout .quiz-header p {
+    color: #ffffff !important;
+}
+
+
+/* Generate button is white, so text must stay blue */
+
+.admin-layout .generate-btn {
+    background: #ffffff !important;
+    color: var(--admin-primary) !important;
+}
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+.admin-layout a {
+    color: inherit;
+}

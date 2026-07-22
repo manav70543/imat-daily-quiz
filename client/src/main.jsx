@@ -5,6 +5,7 @@ import App from "./App";
 
 import "./index.css";
 import "./styles/themes.css";
+import "./styles/adminTheme.css";
 
 import { ThemeProvider } from "./context/ThemeContext";
 
