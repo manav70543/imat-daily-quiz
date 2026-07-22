@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
 import "./Navbar.css";
@@ -6,6 +6,16 @@ import "./Navbar.css";
 export default function Navbar() {
 
   const { theme, changeTheme } = useTheme();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("student");
+    localStorage.removeItem("student_id");
+
+    navigate("/login", { replace: true });
+  };
 
   return (
 
@@ -40,7 +50,7 @@ export default function Navbar() {
         <select
           className="theme-select"
           value={theme}
-          onChange={(e)=>changeTheme(e.target.value)}
+          onChange={(e) => changeTheme(e.target.value)}
         >
 
           <option value="default">
@@ -57,10 +67,17 @@ export default function Navbar() {
 
         </select>
 
+        <button
+          type="button"
+          className="navbar-logout-btn"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
+
       </div>
 
     </nav>
 
   );
-
 }

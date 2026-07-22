@@ -61,3 +61,27 @@ body{
       background .35s,
       color .35s;
 }
+.navbar-logout-btn {
+    background: var(--danger);
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 9px 16px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.navbar-logout-btn:hover {
+    filter: brightness(0.9);
+    transform: translateY(-1px);
+}
+
+.navbar-logout-btn:active {
+    transform: translateY(0);
+}

@@ -44,6 +44,10 @@ function App() {
                 path="/"
                 element={<Login />}
             />
+            <Route
+                path="/login"
+                element={<Login />}
+            />
 
             <Route
                 path="/register"
