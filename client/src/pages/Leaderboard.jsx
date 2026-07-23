@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getLeaderboard } from "../services/LeaderboardService";
+import { getLeaderboard } from "../services/leaderboardService";
 import "../styles/Leaderboard.css";
 
 export default function Leaderboard() {
