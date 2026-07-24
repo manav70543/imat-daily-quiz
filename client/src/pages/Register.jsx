@@ -4,7 +4,6 @@ import { registerStudent } from "../services/authService";
 import "../styles/auth.css";
 
 export default function Register() {
-
     const navigate = useNavigate();
 
     const [fullName, setFullName] = useState("");
@@ -13,93 +12,106 @@ export default function Register() {
     const [loading, setLoading] = useState(false);
 
     const handleRegister = async () => {
+        const cleanName = fullName.trim();
+        const cleanEmail = email.trim().toLowerCase();
 
-        if (!fullName || !email || !password) {
+        if (!cleanName || !cleanEmail || !password) {
             alert("Please fill all fields.");
             return;
         }
 
-        try {
+        if (password.length < 6) {
+            alert("Password must be at least 6 characters.");
+            return;
+        }
 
+        try {
             setLoading(true);
 
             const data = await registerStudent(
-                fullName,
-                email,
+                cleanName,
+                cleanEmail,
                 password
             );
 
-            alert(data.message);
+            alert(data?.message || "Registration successful.");
 
             navigate("/");
 
         } catch (error) {
+            console.error("Registration error:", error);
 
-            alert(
+            const message =
                 error.response?.data?.message ||
-                "Registration failed."
-            );
+                error.data?.message ||
+                error.message ||
+                "Registration failed. Please try again.";
+
+            alert(message);
 
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
-   return (
+    return (
+        <div className="login-page">
+            <div className="login-card">
 
-    <div className="login-page">
+                <h1>Create Account</h1>
 
-        <div className="login-card">
+                <p className="login-subtitle">
+                    Join IMAT Daily Quiz and start practicing.
+                </p>
 
-            <h1>Create Account</h1>
+                <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    disabled={loading}
+                    autoComplete="name"
+                />
 
-            <p className="login-subtitle">
-                Join IMAT Daily Quiz and start practicing.
-            </p>
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
+                    autoComplete="email"
+                />
 
-            <input
-                type="text"
-                placeholder="Full Name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-            />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                    autoComplete="new-password"
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" && !loading) {
+                            handleRegister();
+                        }
+                    }}
+                />
 
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+                <button
+                    className="login-btn"
+                    onClick={handleRegister}
+                    disabled={loading}
+                >
+                    {loading ? "Registering..." : "Register"}
+                </button>
 
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                <p className="login-register">
+                    Already have an account?{" "}
+                    <Link to="/">
+                        Login
+                    </Link>
+                </p>
 
-            <button
-                className="login-btn"
-                onClick={handleRegister}
-                disabled={loading}
-            >
-                {loading ? "Registering..." : "Register"}
-            </button>
-
-            <p className="login-register">
-                Already have an account?{" "}
-                <Link to="/">
-                    Login
-                </Link>
-            </p>
-
+            </div>
         </div>
-
-    </div>
-
-);
-
+    );
 }
