@@ -28,6 +28,11 @@ export default function Quiz() {
 
             const data = await getTodayQuiz();
 
+            console.log("FULL QUIZ RESPONSE:", data);
+            console.log("QUIZ:", data?.quiz);
+            console.log("QUESTIONS:", data?.quiz?.questions);
+            console.log("QUESTION COUNT:", data?.quiz?.questions?.length);
+
             console.log(data);
 
             if (data.alreadySubmitted) {
@@ -265,26 +270,53 @@ export default function Quiz() {
 
     }
 
-    if (!quiz) {
-    return (
-        <div style={{ padding: 30 }}>
-            <h2>No Quiz Available</h2>
-        </div>
-    );
-}
+    if (
+        !quiz ||
+        !Array.isArray(quiz.questions) ||
+        quiz.questions.length === 0
+    ) {
+        return (
+            <div className="quiz-container">
+                <div className="quiz-card">
+                    <h2>No Quiz Available</h2>
+                    <p>
+                        Today's quiz doesn't contain any questions.
+                        Please try again later.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
     const totalQuestions = quiz.questions.length;
 
     const answeredQuestions = Object.keys(answers).length;
 
     const progress =
-        (answeredQuestions / totalQuestions) * 100;
+        totalQuestions > 0
+            ? (answeredQuestions / totalQuestions) * 100
+            : 0;
+
+    const safeQuestionIndex =
+        Math.min(currentQuestion, totalQuestions - 1);
 
     const question =
-        quiz.questions[currentQuestion];
+        quiz.questions[safeQuestionIndex];
+
+    if (!question) {
+        return (
+            <div className="quiz-container">
+                <div className="quiz-card">
+                    <h2>Unable to load question</h2>
+                    <p>Please refresh the page and try again.</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
-    <>
-        <div className="quiz-container">
+        <>
+            <div className="quiz-container">
 
                 <div className="quiz-header">
 

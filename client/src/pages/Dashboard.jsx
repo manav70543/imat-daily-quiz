@@ -2,13 +2,7 @@ import { Link } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import {
-  getStudentDashboard,
-  getWeeklyPerformance,
-  getSubjectPerformance,
-  getCurrentStreak,
-  getAchievements,
-  getStudentXP,
-  getStudentProfile
+  getStudentDashboard
 } from "../services/quizService";
 import {
   FaBookOpen,
@@ -43,86 +37,25 @@ export default function Dashboard() {
   const [achievements, setAchievements] = useState([]);
   const [xpData, setXpData] = useState(null);
 
-  useEffect(() => {
-    loadDashboard();
-    loadWeeklyPerformance();
-    loadSubjectPerformance();
-    loadCurrentStreak();
-    loadAchievements();
-    loadStudentXP();
-    loadProfile();
-  }, []);
+useEffect(() => {
+  loadDashboard();
+}, []);
 
-  const loadDashboard = async () => {
-    try {
-      const data = await getStudentDashboard();
-      setDashboard(data.dashboard);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const loadWeeklyPerformance = async () => {
-    try {
-      const data = await getWeeklyPerformance();
-      setWeeklyData(data.weekly);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const loadSubjectPerformance = async () => {
-    try {
-      const data = await getSubjectPerformance();
-      setSubjects(data.subjects);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const loadCurrentStreak = async () => {
-    try {
-      const data = await getCurrentStreak();
-      setStreak(data.streak);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const loadAchievements = async () => {
+const loadDashboard = async () => {
+  try {
+    const data = await getStudentDashboard();
 
-    try {
+    setDashboard(data.dashboard);
+    setWeeklyData(data.weekly || []);
+    setSubjects(data.subjects || []);
+    setStreak(data.streak || 0);
+    setAchievements(data.achievements || []);
+    setXpData(data.xp || null);
 
-      const data =
-        await getAchievements();
-
-      setAchievements(data.achievements);
-
-    } catch (error) {
-
-      console.error(error);
-
-    }
-
-  };
-  const loadStudentXP = async () => {
-    try {
-      const data = await getStudentXP();
-
-      console.log("XP API RESPONSE:", data);
-
-      setXpData(data);
-
-      console.log("State should become:", data);
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const loadProfile = async () => {
-    try {
-      const data = await getStudentProfile();
-      console.log(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  } catch (error) {
+    console.error("Dashboard loading error:", error);
+  }
+};
   if (!dashboard) {
     return (
       <div className="dashboard-loading">

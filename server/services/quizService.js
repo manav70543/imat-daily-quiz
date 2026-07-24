@@ -306,13 +306,69 @@ exports.getDashboardStats = async () => {
 // ==========================
 exports.getStudentDashboard = async (studentId) => {
 
-    const dashboard = await quizModel.getStudentDashboard(studentId);
+    const [
+        dashboard,
+        weekly,
+        subjects,
+        streak,
+        xpRows
+    ] = await Promise.all([
+        quizModel.getStudentDashboard(studentId),
+        quizModel.getWeeklyPerformance(studentId),
+        quizModel.getSubjectPerformance(studentId),
+        quizModel.getCurrentStreak(studentId),
+        quizModel.getStudentXP(studentId)
+    ]);
+
+    // Calculate XP
+    let xp = 0;
+
+    xpRows.forEach((quiz) => {
+        xp += Number(quiz.score);
+    });
+
+    const level = Math.floor(xp / 100) + 1;
+
+    const xpData = {
+        xp,
+        level,
+        progress: xp % 100,
+        nextLevelXP: level * 100
+    };
+
+    // Calculate achievements using data we already fetched
+    const achievements = [
+        {
+            title: "First Quiz",
+            icon: "🥇",
+            unlocked: dashboard.quizzesAttempted >= 1
+        },
+        {
+            title: "Perfect Score",
+            icon: "💯",
+            unlocked: dashboard.bestScore >= 100
+        },
+        {
+            title: "7 Day Streak",
+            icon: "🔥",
+            unlocked: streak >= 7
+        },
+        {
+            title: "25 Quizzes",
+            icon: "📚",
+            unlocked: dashboard.quizzesAttempted >= 25
+        }
+    ];
 
     return {
         status: 200,
-        dashboard
+        dashboard,
+        weekly,
+        subjects,
+        streak,
+        achievements,
+        xp: xpData
     };
-
 };
 
 exports.getWeeklyPerformance = async (studentId) => {

@@ -1,45 +1,70 @@
 import axios from "axios";
 
+// ==========================================
+// API INSTANCE
+// ==========================================
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 const API = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  baseURL: `${API_URL}/api`,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// ==============================
-// Request Interceptor
-// ==============================
-API.interceptors.request.use((config) => {
+// ==========================================
+// REQUEST INTERCEPTOR
+// ==========================================
 
-  // Don't overwrite Authorization if it already exists
-  if (!config.headers.Authorization) {
+API.interceptors.request.use(
+  (config) => {
+    // Don't overwrite Authorization if it already exists
+    if (!config.headers.Authorization) {
+      // Check which section we're currently using
+      const isAdminRoute = window.location.pathname.startsWith("/admin");
 
-    const token = localStorage.getItem("token");
+      const token = isAdminRoute
+        ? localStorage.getItem("adminToken")
+        : localStorage.getItem("token");
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
-  }
 
-  return config;
-});
-
-// ==============================
-// Response Interceptor
-// ==============================
-API.interceptors.response.use(
-  (response) => response,
+    return config;
+  },
 
   (error) => {
+    return Promise.reject(error);
+  }
+);
 
+// ==========================================
+// RESPONSE INTERCEPTOR
+// ==========================================
+
+API.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+
+  (error) => {
     if (error.response?.status === 401) {
+      const path = window.location.pathname;
 
-      // Student pages
-      if (
-        window.location.pathname.startsWith("/dashboard") ||
-        window.location.pathname.startsWith("/quiz") ||
-        window.location.pathname.startsWith("/history") ||
-        window.location.pathname.startsWith("/profile")
-      ) {
+      // ======================================
+      // STUDENT PROTECTED PAGES
+      // ======================================
 
+      const isStudentProtectedPage =
+        path.startsWith("/dashboard") ||
+        path.startsWith("/quiz") ||
+        path.startsWith("/history") ||
+        path.startsWith("/profile");
+
+      if (isStudentProtectedPage) {
         localStorage.removeItem("token");
         localStorage.removeItem("student");
         localStorage.removeItem("student_id");
@@ -47,11 +72,15 @@ API.interceptors.response.use(
         window.location.href = "/";
       }
 
-      // Admin pages
-      if (
-        window.location.pathname.startsWith("/admin")
-      ) {
+      // ======================================
+      // ADMIN PROTECTED PAGES
+      // ======================================
 
+      const isAdminPage =
+        path.startsWith("/admin") &&
+        !path.startsWith("/admin/login");
+
+      if (isAdminPage) {
         localStorage.removeItem("adminToken");
         localStorage.removeItem("admin");
 
