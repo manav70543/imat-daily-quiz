@@ -1,53 +1,49 @@
 const db = require("../config/db");
 
+// ===========================
+// Find Student By Email
+// ===========================
 exports.findStudentByEmail = async (email) => {
-
     const [rows] = await db.query(
         "SELECT * FROM students WHERE email = ?",
         [email]
     );
 
     return rows;
-
 };
 
+// ===========================
+// Create Student
+// ===========================
 exports.createStudent = async (
     full_name,
     email,
-    password,
-    verificationToken,
-    verificationExpiry
+    password
 ) => {
-
     const [result] = await db.query(
         `
         INSERT INTO students
         (
             full_name,
             email,
-            password,
-            email_verified,
-            verification_token,
-            verification_token_expiry
+            password
         )
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?)
         `,
         [
             full_name,
             email,
-            password,
-            0,
-            verificationToken,
-            verificationExpiry
+            password
         ]
     );
 
     return result;
-
 };
 
+// ===========================
+// Find Student By ID
+// ===========================
 exports.findStudentById = async (id) => {
-
     const [rows] = await db.query(
         `
         SELECT
@@ -62,11 +58,12 @@ exports.findStudentById = async (id) => {
     );
 
     return rows;
-
 };
 
+// ===========================
+// Get Student Details
+// ===========================
 exports.getStudentDetails = async (id) => {
-
     const [studentRows] = await db.query(
         `
         SELECT
@@ -90,7 +87,7 @@ exports.getStudentDetails = async (id) => {
         `
         SELECT
             COUNT(*) AS totalAttempts,
-            ROUND(AVG(score),2) AS averageScore,
+            ROUND(AVG(score), 2) AS averageScore,
             MAX(score) AS highestScore,
             MIN(score) AS lowestScore
         FROM quiz_results
@@ -126,13 +123,14 @@ exports.getStudentDetails = async (id) => {
 
     return {
         student: studentRows[0],
+
         stats: {
             totalAttempts: stats.totalAttempts,
             averageScore: stats.averageScore || 0,
             highestScore: stats.highestScore || 0,
             lowestScore: stats.lowestScore || 0
         },
+
         history
     };
-
 };
